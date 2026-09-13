@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Outfit, Playfair } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/providers/provider";
 
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
 });
 
-const playfair = Playfair({
+const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
 });
@@ -20,11 +21,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={`${outfit.variable} ${playfair.variable} min-h-full flex flex-col text-zinc-950 antialiased`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
