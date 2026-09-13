@@ -1,0 +1,9 @@
+// loading spinner for 4 seconds before redirecting to the next page
+
+export default function Loader() {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-24 w-24 border-4 border-gray-300 border-t-primary"></div>
+    </div>
+  );
+}
