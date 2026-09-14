@@ -5,10 +5,11 @@
   --color-primary: #00b1bb;
   --color-primary-dark: #018a93;
   --color-bg: #fff;
+  --color-cream-bg: #faf7f2;
   --color-text: #1b2426;
   --color-text-muted: #5c6b6d;
   --color-border: #dce7e6;
-  --nav-footer-bg: #00b2bb84;
+  --color-nav-footer-bg: #00b2bb84;
 }
 
 * {

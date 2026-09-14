@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/providers/provider";
+import Navbar from "@/components/layout/header/Navbar";
+import Footer from "@/components/layout/footer/Footer";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,7 +27,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body
         className={`${outfit.variable} ${playfair.variable} min-h-full flex flex-col text-zinc-950 antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <Navbar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
