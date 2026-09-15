@@ -14,19 +14,10 @@ import {
 } from "react-icons/fi";
 import { navLinks } from "@/constant/site";
 import { assets } from "@/assets";
-import MainButton from "@/components/shared/MainButton";
-
-// if user
-const user = {
-  firstName: "John",
-  lastName: "Doe",
-  email: "example@example.com",
-  image: null,
-};
-// if no user
-// const user = null;
+import { useUserContext } from "@/context/UserContext";
 
 const Header = () => {
+  const { user, logout } = useUserContext();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
@@ -177,6 +168,7 @@ const Header = () => {
                       type="button"
                       onClick={() => {
                         setIsUserMenuOpen(false);
+                        logout();
                       }}
                       className="w-full flex items-center gap-2 bg-red-50 px-4 py-3 font-medium text-red-500 transition-colors hover:bg-red-100"
                     >
@@ -317,6 +309,7 @@ const Header = () => {
               type="button"
               onClick={() => {
                 closeMobileMenu();
+                logout();
               }}
               className="w-full flex items-center gap-2 rounded-lg bg-red-50 px-4 py-3 font-medium text-red-500 transition-colors hover:bg-red-100"
             >
