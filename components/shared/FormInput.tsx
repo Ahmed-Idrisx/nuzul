@@ -27,7 +27,10 @@ const FormInput = <T extends FieldValues>({
 }: FormInputProps<T>) => {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={name} className="text-sm font-semibold sm:text-lg">
+      <label
+        htmlFor={name}
+        className="text-text-muted text-sm font-semibold sm:text-lg"
+      >
         {label}
       </label>
 
@@ -42,7 +45,7 @@ const FormInput = <T extends FieldValues>({
           id={name}
           {...(register ? register(name) : {})}
           {...props}
-          className={`w-full rounded-full border bg-bg py-3 text-sm text-text outline-none transition-colors placeholder:text-text-muted sm:text-base ${
+          className={`w-full rounded-xl border bg-bg py-3 text-sm text-text outline-none transition-colors placeholder:text-text-muted sm:text-base ${
             icon ? "pr-12" : "px-5"
           } ${
             error

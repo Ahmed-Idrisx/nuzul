@@ -24,7 +24,7 @@ const MainButton = ({
       {...props}
       disabled={disabled || isLoading}
       className={cn(
-        "group flex items-center justify-center gap-2 cursor-pointer rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-primary-dark active:scale-98 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base",
+        "group flex items-center justify-center gap-2 cursor-pointer rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:bg-primary-dark active:scale-98 disabled:cursor-not-allowed disabled:opacity-60 sm:text-base",
         fullWidth ? "w-full" : "w-fit",
         className,
       )}

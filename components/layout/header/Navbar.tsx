@@ -14,6 +14,7 @@ import {
 } from "react-icons/fi";
 import { navLinks } from "@/constant/site";
 import { assets } from "@/assets";
+import MainButton from "@/components/shared/MainButton";
 
 // if user
 const user = {
@@ -171,6 +172,7 @@ const Header = () => {
                     </Link>
 
                     {/* Logout */}
+
                     <button
                       type="button"
                       onClick={() => {

@@ -69,7 +69,7 @@ export default function Footer() {
               </h3>
               <ul className="mt-4 flex flex-col gap-3">
                 {getTheApp.map((link) => (
-                  <li key={link.href}>
+                  <li key={link.label}>
                     <Link
                       href={link.href}
                       className="text-text-muted transition-colors hover:text-primary-dark"
@@ -88,7 +88,7 @@ export default function Footer() {
               </h3>
               <ul className="mt-4 flex flex-col gap-3">
                 {company.map((link) => (
-                  <li key={link.href}>
+                  <li key={link.label}>
                     <Link
                       href={link.href}
                       className="text-text-muted transition-colors hover:text-primary-dark"
