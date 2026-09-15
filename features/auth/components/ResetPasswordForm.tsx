@@ -12,16 +12,15 @@ import {
 } from "../schemas/auth.schema";
 import FormInput from "@/components/shared/FormInput";
 import { FiSend } from "react-icons/fi";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useResetPassword } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import { ApiError } from "@/lib/api-client";
+import { useAuth } from "@/context/AuthContext";
 
 export function ResetPasswordForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const email = searchParams.get("email");
-  const otp = searchParams.get("otp");
+  const { email, otp, flow, clearAuth } = useAuth();
 
   const { mutateAsync: resetPassword, isPending } = useResetPassword();
 
@@ -39,8 +38,9 @@ export function ResetPasswordForm() {
   });
 
   const onSubmit = async (data: ResetPasswordFormData) => {
-    if (!email || !otp) {
+    if (!email || !otp || flow !== "reset") {
       toast.error("Reset information is missing");
+      router.replace("/forgot-password");
       return;
     }
     try {
@@ -51,6 +51,7 @@ export function ResetPasswordForm() {
       });
       toast.success(res.message);
       reset();
+      clearAuth();
       router.push("/login");
     } catch (error) {
       if (error instanceof ApiError) {

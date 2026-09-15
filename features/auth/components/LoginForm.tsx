@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
 import MainButton from "@/components/shared/MainButton";
 import AuthHeader from "./AuthHeader";
 import { LoginFormData, loginSchema } from "../schemas/auth.schema";
@@ -13,14 +12,10 @@ import { useRouter } from "next/navigation";
 import { useLogin } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import { ApiError } from "@/lib/api-client";
-// import { useAuth } from "@/context/AuthContext";
 
 export function LoginForm() {
   const router = useRouter();
-  // const { refreshAuth } = useAuth();
-
   const { mutateAsync: login, isPending } = useLogin();
-
   const {
     register,
     handleSubmit,
@@ -38,7 +33,6 @@ export function LoginForm() {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const res = await login({ email: data.email, password: data.password });
-      // refreshAuth();
       toast.success(res.message);
       reset();
       router.push("/");

@@ -8,21 +8,19 @@ import MainButton from "@/components/shared/MainButton";
 import AuthHeader from "./AuthHeader";
 import { verifyOtpData, verifyOtpSchema } from "../schemas/auth.schema";
 import { FiSend } from "react-icons/fi";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useVerifyOtp } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import { ApiError } from "@/lib/api-client";
+import { useAuth } from "@/context/AuthContext";
 
 export default function VerifyOtpForm() {
+  console.log("VerifyOtpForm rendered");
   const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const email = searchParams.get("email");
-  const type = searchParams.get("type");
+  const { email, flow, setOtp, clearAuth } = useAuth();
+  console.log("AUTH:", { email, flow });
 
   const { mutateAsync: verifyOtp, isPending } = useVerifyOtp();
-
-  const isResetFlow = type === "reset";
 
   const {
     register,
@@ -39,19 +37,25 @@ export default function VerifyOtpForm() {
   const onSubmit = async (data: verifyOtpData) => {
     if (!email) {
       toast.error("Email address is missing");
+
+      if (flow === "reset") {
+        router.replace("/forgot-password");
+      } else {
+        router.replace("/register");
+      }
+
       return;
     }
     try {
       // Forgot password flow
       // OTP will be verified later by the reset-password request.
-      if (isResetFlow) {
+      if (flow === "reset") {
+        setOtp(data.otp);
+
         reset();
 
-        router.push(
-          `/reset-password?email=${encodeURIComponent(
-            email,
-          )}&otp=${encodeURIComponent(data.otp)}`,
-        );
+        router.push("/reset-password");
+
         return;
       }
       // Register flow
@@ -60,6 +64,8 @@ export default function VerifyOtpForm() {
       toast.success(res.message);
 
       reset();
+
+      clearAuth();
 
       router.push("/login");
     } catch (error) {
@@ -104,7 +110,7 @@ export default function VerifyOtpForm() {
           loadingText="Verifying..."
           icon={<FiSend size={18} />}
         >
-          {isResetFlow ? "Verify and continue" : "Verify account"}
+          {flow === "reset" ? "Verify and continue" : "Verify account"}
         </MainButton>
 
         <p className="text-center text-sm text-zinc-500">

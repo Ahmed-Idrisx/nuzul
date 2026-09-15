@@ -14,9 +14,11 @@ import { RegisterFormData, registerSchema } from "../schemas/auth.schema";
 import { useRegister } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import { ApiError } from "@/lib/api-client";
+import { useAuth } from "@/context/AuthContext";
 
 export function RegisterForm() {
   const router = useRouter();
+  const { setEmail, setFlow } = useAuth();
 
   const { mutateAsync: registerUser, isPending } = useRegister();
 
@@ -49,9 +51,10 @@ export function RegisterForm() {
 
       toast.success(res.message);
 
+      setEmail(data.email);
+      setFlow("register");
       reset();
-
-      router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
+      router.push("/verify-otp");
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);

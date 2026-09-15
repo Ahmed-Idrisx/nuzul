@@ -16,9 +16,11 @@ import { useRouter } from "next/navigation";
 import { useForgotPassword } from "../hooks/useAuth";
 import { toast } from "react-toastify";
 import { ApiError } from "@/lib/api-client";
+import { useAuth } from "@/context/AuthContext";
 
 export default function ForgotPasswordForm() {
   const router = useRouter();
+  const { setEmail, setFlow } = useAuth();
 
   const { mutateAsync: forgotPassword, isPending } = useForgotPassword();
   const {
@@ -36,11 +38,15 @@ export default function ForgotPasswordForm() {
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
       const res = await forgotPassword({ email: data.email });
+
       toast.success(res.message);
+
+      setEmail(data.email);
+      setFlow("reset");
+
       reset();
-      router.push(
-        `/verify-otp?email=${encodeURIComponent(data.email)}&type=reset`,
-      );
+
+      router.push("/verify-otp");
     } catch (error) {
       if (error instanceof ApiError) {
         toast.error(error.message);
@@ -77,11 +83,11 @@ export default function ForgotPasswordForm() {
           Send code
         </MainButton>
 
-        <p className="text-center text-sm text-zinc-500">
+        <p className="text-center text-sm text-text">
           Back to{" "}
           <Link
             href="/login"
-            className="font-semibold text-blue-700 hover:underline"
+            className="font-semibold text-primary hover:underline"
           >
             Sign in
           </Link>
