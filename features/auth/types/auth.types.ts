@@ -1,21 +1,19 @@
-export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  image: string | null;
-  role: "USER" | "HOTEL_OWNER";
-  isVerified: boolean;
-}
-
 export interface LoginPayload {
   email: string;
   password: string;
 }
 
 export interface LoginResponseData {
-  user: User;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    image: string | null;
+    role: "USER" | "HOTEL_OWNER";
+    isVerified: boolean;
+  };
 }
 
 export interface RegisterPayload {

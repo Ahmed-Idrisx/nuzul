@@ -17,10 +17,10 @@ export function useLogin() {
   return useMutation({
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
 
-    // onSuccess: (res) => {
-    //   // update the profile data in the cache after a successful update
-    //   queryClient.setQueryData(["profile"], res.data[0]);
-    // },
+    onSuccess: (res) => {
+      // update the profile data in the cache after a successful update
+      queryClient.setQueryData(["profile"], res.data[0]);
+    },
   });
 }
 
