@@ -36,7 +36,7 @@ const FormInput = <T extends FieldValues>({
 
       <div className="relative">
         {icon && (
-          <span className="pointer-events-none absolute right-5 top-1/2 -translate-y-1/2 text-text-muted">
+          <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-text-muted">
             {icon}
           </span>
         )}
@@ -46,7 +46,7 @@ const FormInput = <T extends FieldValues>({
           {...(register ? register(name) : {})}
           {...props}
           className={`w-full rounded-xl border bg-bg py-3 text-sm text-text outline-none transition-colors placeholder:text-text-muted sm:text-base ${
-            icon ? "pr-12" : "px-5"
+            icon ? "pl-12" : "px-5"
           } ${
             error
               ? "border-red-500 focus:border-red-500"
