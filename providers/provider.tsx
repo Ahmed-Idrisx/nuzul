@@ -1,4 +1,6 @@
 "use client";
+import { AuthProvider } from "@/context/AuthContext";
+import { UserProvider } from "@/context/UserContext";
 import { queryClient } from "@/lib/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -11,8 +13,12 @@ export function Providers({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       {/* only in development */}
       <ReactQueryDevtools initialIsOpen={false} />
-      {children}
-      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+      <AuthProvider>
+        <UserProvider>
+          {children}
+          <ToastContainer position="top-right" autoClose={3000} theme="light" />
+        </UserProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
