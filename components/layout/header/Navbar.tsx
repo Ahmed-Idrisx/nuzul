@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
+  FiBook,
   FiChevronDown,
+  FiHome,
   FiLogIn,
   FiLogOut,
   FiMenu,
@@ -14,14 +16,17 @@ import {
 } from "react-icons/fi";
 import { navLinks } from "@/constant/site";
 import { assets } from "@/assets";
-import { useUserContext } from "@/context/UserContext";
+import { useAppContext } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const { user, logout } = useUserContext();
+  const router = useRouter();
+  const { user, logout, setShowHotelReg } = useAppContext();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
 
+  // Mobile Menu
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
   };
@@ -30,22 +35,51 @@ const Header = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
+  // Mobile Menu
   const toggleUserMenu = () => {
     setIsUserMenuOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
+  const closeUserMenu = () => {
+    setIsUserMenuOpen(false);
+  };
+
+  // Hotel action
+  const handleHotelAction = () => {
+    closeUserMenu();
+    if (user?.role === "HOTEL_OWNER") {
+      router.push("/dashboard");
+      return;
     }
+    setShowHotelReg(true);
+  };
+
+  const handleMobileHotelAction = () => {
+    closeMobileMenu();
+    if (user?.role === "HOTEL_OWNER") {
+      router.push("/dashboard");
+      return;
+    }
+    setShowHotelReg(true);
+  };
+
+  // Logout
+  const handleLogout = () => {
+    closeUserMenu();
+    closeMobileMenu();
+    logout();
+  };
+
+  // Prevent body scroll
+  useEffect(() => {
+    document.body.style.overflow = isMobileMenuOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
     };
   }, [isMobileMenuOpen]);
 
+  // Close dropdown on outside click
   useEffect(() => {
     if (!isUserMenuOpen) return;
 
@@ -62,6 +96,19 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isUserMenuOpen]);
 
+  // Close menus with Escape
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setIsMobileMenuOpen(false);
+      setIsUserMenuOpen(false);
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
   return (
     <>
       {/* HEADER */}
@@ -71,7 +118,11 @@ const Header = () => {
           <Link
             href="/"
             className="flex shrink-0 items-center"
-            onClick={closeMobileMenu}
+            onClick={() => {
+              closeMobileMenu();
+              closeUserMenu();
+            }}
+            aria-label="Nuzul home"
           >
             <Image
               src={assets.logo}
@@ -90,7 +141,7 @@ const Header = () => {
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="font-medium transition-colors duration-300 hover:text-primary text-text"
+                    className="font-medium text-text transition-colors duration-300 hover:text-primary"
                   >
                     {link.title}
                   </Link>
@@ -103,12 +154,34 @@ const Header = () => {
           <div className="flex shrink-0 items-center gap-3">
             {/* DESKTOP USER */}
             {user ? (
-              <div className="relative hidden lg:block" ref={userMenuRef}>
+              <div
+                ref={userMenuRef}
+                className="relative hidden items-center gap-3 lg:flex"
+              >
+                {/* Dashboard / List Hotel */}
+                <button
+                  type="button"
+                  onClick={handleHotelAction}
+                  className={`flex h-11 items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors ${user.role === "HOTEL_OWNER" ? "bg-gray-100 text-text hover:bg-gray-200" : "bg-green-100 text-green-700 hover:bg-green-200"}`}
+                >
+                  {user.role === "HOTEL_OWNER" ? (
+                    <FiSettings className="h-5 w-5" />
+                  ) : (
+                    <FiHome className="h-5 w-5" />
+                  )}
+                  <span>
+                    {user.role === "HOTEL_OWNER"
+                      ? "Dashboard"
+                      : "List your Hotel"}
+                  </span>
+                </button>
+                {/* User Button */}
                 <button
                   type="button"
                   aria-haspopup="menu"
+                  aria-expanded={isUserMenuOpen}
                   onClick={toggleUserMenu}
-                  className="cursor-pointer flex h-11 items-center gap-2 rounded-full border border-primary bg-white px-2 transition-all hover:border-primary-dark hover:shadow-sm"
+                  className="flex h-11 items-center gap-2 rounded-full border border-primary bg-white px-2 transition-all duration-200 hover:border-primary-dark hover:shadow-sm"
                 >
                   {/* Chevron */}
                   <FiChevronDown
@@ -141,40 +214,48 @@ const Header = () => {
                 {isUserMenuOpen && (
                   <div
                     role="menu"
-                    className="absolute right-0 top-[calc(100%+15px)] z-50 w-55 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl"
+                    className="absolute right-0 top-[calc(100%+15px)] z-50 w-55 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl"
                   >
                     {/* User info */}
                     <div className="border-b border-gray-100 px-5 py-4">
                       <p className="text-xs text-text-muted">Welcome back!</p>
-
-                      <p className="mt-1 text-sm font-semibold text-text">
+                      <p className="mt-1 truncate text-sm font-semibold text-text">
                         {user.firstName} {user.lastName}
+                      </p>
+                      <p className="mt-0.5 truncate text-xs text-text-muted">
+                        {user.email}
                       </p>
                     </div>
 
                     {/* Profile */}
                     <Link
                       href="/profile"
-                      onClick={() => setIsUserMenuOpen(false)}
-                      className="flex items-center gap-2 bg-blue-50 px-4 py-3 font-medium text-primary transition-colors hover:bg-blue-100"
+                      role="menuitem"
+                      onClick={closeUserMenu}
+                      className="flex items-center gap-3 px-4 py-3 font-medium text-text transition-colors hover:bg-blue-50 hover:text-primary"
                     >
-                      <FiSettings className="h-5 w-5" />
-                      <span>Profile</span>
+                      <FiUser className="h-5 w-5" /> <span>Profile</span>
+                    </Link>
+
+                    <Link
+                      href="/my-bookings"
+                      role="menuitem"
+                      onClick={closeUserMenu}
+                      className="flex items-center gap-3 px-4 py-3 font-medium text-text transition-colors hover:bg-orange-50 hover:text-orange-600"
+                    >
+                      <FiBook className="h-5 w-5" />
+                      <span>My Bookings</span>
                     </Link>
 
                     {/* Logout */}
 
                     <button
                       type="button"
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        logout();
-                      }}
-                      className="w-full flex items-center gap-2 bg-red-50 px-4 py-3 font-medium text-red-500 transition-colors hover:bg-red-100"
+                      role="menuitem"
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-3 border-t border-gray-100 px-4 py-3 font-medium text-red-500 transition-colors hover:bg-red-50"
                     >
-                      <FiLogOut className="h-5 w-5" />
-
-                      <span>Logout</span>
+                      <FiLogOut className="h-5 w-5" /> <span>Logout</span>
                     </button>
                   </div>
                 )}
@@ -183,7 +264,7 @@ const Header = () => {
               // DESKTOP LOGIN
               <Link
                 href="/login"
-                className="hidden h-12 items-center justify-center rounded-full bg-primary border border-primary px-10 text-sm font-bold text-white transition-all duration-200 hover:bg-primary-dark lg:flex"
+                className="hidden h-11 items-center justify-center rounded-full border border-primary bg-primary px-8 text-sm font-bold text-white transition-all duration-200 hover:bg-primary-dark lg:flex"
               >
                 Login
               </Link>
@@ -193,10 +274,19 @@ const Header = () => {
             <button
               type="button"
               onClick={toggleMobileMenu}
-              aria-label="open menu"
-              className="flex h-11 w-11 items-center justify-center rounded-lg text-text lg:hidden"
+              aria-label={
+                isMobileMenuOpen
+                  ? "Close navigation menu"
+                  : "Open navigation menu"
+              }
+              aria-expanded={isMobileMenuOpen}
+              className="flex h-11 w-11 items-center justify-center rounded-xl text-text transition-colors hover:bg-black/5 lg:hidden"
             >
-              <FiMenu className="h-6 w-6" />
+              {isMobileMenuOpen ? (
+                <FiX className="h-6 w-6" />
+              ) : (
+                <FiMenu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -204,17 +294,15 @@ const Header = () => {
 
       {/* MOBILE OVERLAY  */}
       <div
-        className={`fixed inset-0 z-60 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden ${
-          isMobileMenuOpen
-            ? "pointer-events-auto opacity-100"
-            : "pointer-events-none opacity-0"
-        }`}
+        aria-hidden="true"
         onClick={closeMobileMenu}
+        className={`fixed inset-0 z-60 bg-black/50 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden ${isMobileMenuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
       />
 
       {/* MOBILE SIDEBAR  */}
       <aside
-        className={`fixed left-0 top-0 z-70 flex h-dvh w-72 flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-72"}`}
+        aria-label="Mobile navigation"
+        className={`fixed left-0 top-0 z-70 flex h-dvh w-72 flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/*  SIDEBAR HEADER  */}
         <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-5 py-3.5">
@@ -223,6 +311,7 @@ const Header = () => {
             href="/"
             className="flex shrink-0 items-center"
             onClick={closeMobileMenu}
+            aria-label="Nuzul home"
           >
             <Image
               src={assets.logo}
@@ -236,7 +325,7 @@ const Header = () => {
           <button
             type="button"
             onClick={closeMobileMenu}
-            aria-label="close menu"
+            aria-label="Close menu"
             className="flex h-10 w-10 items-center justify-center rounded-full text-text transition-colors hover:bg-gray-100"
           >
             <FiX className="h-6 w-6" />
@@ -253,20 +342,20 @@ const Header = () => {
                 <Image
                   src={user.image}
                   alt={user.firstName}
-                  width={56}
-                  height={56}
+                  width={48}
+                  height={48}
                   className="h-full w-full object-cover"
                 />
               ) : (
                 <FiUser className="h-7 w-7 text-text-muted" />
               )}
             </div>
-
             {/* User info */}
             <div className="min-w-0">
-              <p className="font-semibold text-text">{user.firstName}</p>
-
-              <p className="text-sm text-text-muted">{user.email}</p>
+              <p className="truncate font-semibold text-text">
+                {user.firstName} {user.lastName}
+              </p>
+              <p className="truncate text-sm text-text-muted">{user.email}</p>
             </div>
           </div>
         )}
@@ -279,7 +368,7 @@ const Header = () => {
                 <Link
                   href={link.href}
                   onClick={closeMobileMenu}
-                  className="flex items-center rounded-lg px-4 py-3 font-medium transition-colors text-text hover:text-primary hover:bg-blue-50"
+                  className="flex items-center rounded-xl px-4 py-3 font-medium text-text transition-colors hover:bg-blue-50 hover:text-primary"
                 >
                   {link.title}
                 </Link>
@@ -287,45 +376,60 @@ const Header = () => {
             ))}
           </ul>
         </nav>
-        {/* Profile - Only logged in */}
+        {/* Logged-in Actions */}
         {user && (
-          <div className="bg-white p-4 border-t border-gray-100">
+          <div className="border-t border-gray-100 bg-white p-4">
+            {/* Dashboard / List Hotel */}
+            <button
+              type="button"
+              onClick={handleMobileHotelAction}
+              className={`flex w-full items-center gap-3 px-4 py-3 font-medium transition-colors ${user.role === "HOTEL_OWNER" ? "bg-gray-50 text-text hover:bg-gray-100" : "bg-green-50 text-green-700 hover:bg-green-100"}`}
+            >
+              {user.role === "HOTEL_OWNER" ? (
+                <FiSettings className="h-5 w-5" />
+              ) : (
+                <FiHome className="h-5 w-5" />
+              )}
+              <span>
+                {user.role === "HOTEL_OWNER" ? "Dashboard" : "List your Hotel"}
+              </span>
+            </button>
+            {/* Profile */}
             <Link
               href="/profile"
               onClick={closeMobileMenu}
-              className="flex items-center gap-2 rounded-lg bg-blue-50 px-4 py-3 font-medium text-primary transition-colors hover:bg-blue-100"
+              className="flex items-center gap-3 border-t border-gray-100 px-4 py-3 font-medium text-text transition-colors hover:bg-blue-50 hover:text-primary"
             >
-              <FiSettings className="h-5 w-5" />
-
-              <span>Profile</span>
+              <FiUser className="h-5 w-5" /> <span>Profile</span>
+            </Link>
+            {/* My Bookings */}
+            <Link
+              href="/my-bookings"
+              onClick={closeMobileMenu}
+              className="flex items-center gap-3 border-t border-gray-100 px-4 py-3 font-medium text-text transition-colors hover:bg-orange-50 hover:text-orange-600"
+            >
+              <FiBook className="h-5 w-5" /> <span>My Bookings</span>
             </Link>
           </div>
         )}
 
         {/* MOBILE FOOTER ACTION */}
-        <div className="bg-white p-4 pt-0">
+        <div className="border-t border-gray-100 bg-white p-4 pt-0">
           {user ? (
             <button
               type="button"
-              onClick={() => {
-                closeMobileMenu();
-                logout();
-              }}
-              className="w-full flex items-center gap-2 rounded-lg bg-red-50 px-4 py-3 font-medium text-red-500 transition-colors hover:bg-red-100"
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-xl bg-red-50 px-4 py-3 font-medium text-red-500 transition-colors hover:bg-red-100"
             >
-              <FiLogOut className="h-5 w-5" />
-
-              <span>Logout</span>
+              <FiLogOut className="h-5 w-5" /> <span>Logout</span>
             </button>
           ) : (
             <Link
               href="/login"
               onClick={closeMobileMenu}
-              className="w-full flex items-center gap-2 rounded-lg bg-primary px-4 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
+              className="flex w-full items-center gap-3 rounded-xl bg-primary px-4 py-3 font-medium text-white transition-colors hover:bg-primary-dark"
             >
-              <FiLogIn className="h-5 w-5" />
-
-              <span>Login</span>
+              <FiLogIn className="h-5 w-5" /> <span>Login</span>
             </Link>
           )}
         </div>

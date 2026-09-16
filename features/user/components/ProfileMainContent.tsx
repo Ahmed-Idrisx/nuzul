@@ -1,13 +1,13 @@
 "use client";
 
 import Spinner from "@/components/ui/Spinner";
-import { useUserContext } from "@/context/UserContext";
+import { useAppContext } from "@/context/UserContext";
 
 import ProfileBanner from "@/features/user/components/ProfileBanner";
 import ProfileForm from "@/features/user/components/ProfileForm";
 
 export default function ProfileMainContent() {
-  const { user, isLoading } = useUserContext();
+  const { user, isLoading } = useAppContext();
 
   console.log("PROFILE:", { user, isLoading });
 
