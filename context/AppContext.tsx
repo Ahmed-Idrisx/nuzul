@@ -13,7 +13,7 @@ import {
   type SetStateAction,
 } from "react";
 
-interface UserContextValue {
+interface AppContextValue {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -24,9 +24,9 @@ interface UserContextValue {
   setSearchedCities: Dispatch<SetStateAction<string[]>>;
 }
 
-const UserContext = createContext<UserContextValue | undefined>(undefined);
+const AppContext = createContext<AppContextValue | undefined>(undefined);
 
-export function UserProvider({ children }: { children: ReactNode }) {
+export function AppProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const [showHotelReg, setShowHotelReg] = useState(false);
   const [searchedCities, setSearchedCities] = useState<string[]>([]);
@@ -41,7 +41,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <UserContext.Provider
+    <AppContext.Provider
       value={{
         user: user ?? null,
         isLoading,
@@ -54,14 +54,14 @@ export function UserProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-    </UserContext.Provider>
+    </AppContext.Provider>
   );
 }
 
-export function useAppContext(): UserContextValue {
-  const ctx = useContext(UserContext);
+export function useAppContext(): AppContextValue {
+  const ctx = useContext(AppContext);
   if (!ctx) {
-    throw new Error("useAppContext must be used within a <UserProvider>");
+    throw new Error("useAppContext must be used within a <AppProvider>");
   }
   return ctx;
 }

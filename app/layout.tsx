@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import MainLayout from "./MainLayout";
+import { ReactNode } from "react";
 import { Providers } from "@/providers/provider";
-import Navbar from "@/components/layout/header/Navbar";
-import Footer from "@/components/layout/footer/Footer";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -21,16 +21,14 @@ export const metadata: Metadata = {
     "Nuzul is your platform for booking unique homes and local experiences. Discover the perfect getaway and create unforgettable memories with Nuzul.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body
         className={`${outfit.variable} ${playfair.variable} min-h-full flex flex-col text-zinc-950 antialiased`}
       >
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
+          <MainLayout>{children}</MainLayout>
         </Providers>
       </body>
     </html>

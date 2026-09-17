@@ -16,7 +16,7 @@ import {
 } from "react-icons/fi";
 import { navLinks } from "@/constant/site";
 import { assets } from "@/assets";
-import { useAppContext } from "@/context/UserContext";
+import { useAppContext } from "@/context/AppContext";
 import { useRouter } from "next/navigation";
 
 const Header = () => {

@@ -1,7 +1,7 @@
 "use client";
 
 import Spinner from "@/components/ui/Spinner";
-import { useAppContext } from "@/context/UserContext";
+import { useAppContext } from "@/context/AppContext";
 
 import ProfileBanner from "@/features/user/components/ProfileBanner";
 import ProfileForm from "@/features/user/components/ProfileForm";

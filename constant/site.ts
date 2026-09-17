@@ -71,3 +71,14 @@ export const socialLinks = [
     Icon: FaInstagram,
   },
 ];
+
+export const facilitiesOptions = [
+  "Free WiFi",
+  "Restaurant",
+  "Gym",
+  "Room Service",
+  "Free Parking",
+  "Swimming Pool",
+  "24-hour Front Desk",
+  "Airport Shuttle",
+];
