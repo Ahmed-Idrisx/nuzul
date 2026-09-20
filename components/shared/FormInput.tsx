@@ -2,6 +2,7 @@ import { InputHTMLAttributes, ReactNode } from "react";
 import {
   FieldError,
   UseFormRegister,
+  RegisterOptions,
   FieldValues,
   Path,
 } from "react-hook-form";
@@ -13,6 +14,7 @@ interface FormInputProps<T extends FieldValues> extends Omit<
   label: string;
   name: Path<T>;
   register?: UseFormRegister<T>;
+  registerOptions?: RegisterOptions<T, Path<T>>;
   error?: FieldError;
   icon?: ReactNode;
 }
@@ -21,6 +23,7 @@ const FormInput = <T extends FieldValues>({
   label,
   name,
   register,
+  registerOptions,
   error,
   icon,
   ...props
@@ -43,7 +46,7 @@ const FormInput = <T extends FieldValues>({
 
         <input
           id={name}
-          {...(register ? register(name) : {})}
+          {...(register ? register(name, registerOptions) : {})}
           {...props}
           className={`w-full rounded-xl border bg-bg py-3 text-sm text-text outline-none transition-colors placeholder:text-text-muted sm:text-base ${
             icon ? "pl-12" : "px-5"
