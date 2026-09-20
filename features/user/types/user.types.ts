@@ -1,3 +1,6 @@
+import { HotelRoom } from "@/features/rooms/types/room.types";
+
+export type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
 export interface Booking {
   id: string;
   userId: string;
@@ -12,6 +15,13 @@ export interface Booking {
   isPaid: boolean;
   createdAt: string;
   updatedAt: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
 }
 
 export interface Hotel {
@@ -27,8 +37,7 @@ export interface Hotel {
   city: string;
   contact: string;
   ownerId: string;
-  createdAt: string;
-  updatedAt: string;
+  rooms: HotelRoom[];
 }
 
 export interface User {
