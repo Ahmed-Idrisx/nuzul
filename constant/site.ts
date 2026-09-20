@@ -82,3 +82,21 @@ export const facilitiesOptions = [
   "24-hour Front Desk",
   "Airport Shuttle",
 ];
+
+export const amenitiesOptions = [
+  "Free WiFi",
+  "Free Breakfast",
+  "Coffee Maker",
+  "Room Service",
+  "Mountain View",
+  "Pool Access",
+];
+
+export const roomTypeOptions = [
+  "Single Bed",
+  "Double Bed",
+  "Twin Bed",
+  "Studio Apartment",
+  "Luxury Room",
+  "Family Suite",
+];
