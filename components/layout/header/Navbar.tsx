@@ -35,7 +35,7 @@ const Header = () => {
     setIsMobileMenuOpen((prev) => !prev);
   };
 
-  // Mobile Menu
+  // User Menu
   const toggleUserMenu = () => {
     setIsUserMenuOpen((prev) => !prev);
   };

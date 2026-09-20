@@ -6,17 +6,16 @@ import { useAppContext } from "@/context/AppContext";
 import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 
-export default function MainLayout({ children }: { children: ReactNode }) {
+export default function AppLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isOwnerPath = pathname.includes("dashboard");
   const { showHotelReg } = useAppContext();
   return (
     <>
-      {/* {!isOwnerPath && <Navbar />} */}
-      <Navbar />
+      {!isOwnerPath && <Navbar />}
       {showHotelReg && <CreateHotelForm />}
       {children}
-      <Footer />
+      {!isOwnerPath && <Footer />}
     </>
   );
 }

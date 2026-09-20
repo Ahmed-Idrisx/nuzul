@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import MainLayout from "./MainLayout";
 import { ReactNode } from "react";
 import { Providers } from "@/providers/provider";
+import AppLayout from "@/layout/AppLayout";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,10 +25,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body
-        className={`${outfit.variable} ${playfair.variable} min-h-full flex flex-col text-zinc-950 antialiased`}
+        className={`${outfit.variable} ${playfair.variable} min-h-full flex flex-col text-text antialiased`}
       >
         <Providers>
-          <MainLayout>{children}</MainLayout>
+          <AppLayout>{children}</AppLayout>
         </Providers>
       </body>
     </html>
