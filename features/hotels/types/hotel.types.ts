@@ -1,22 +1,13 @@
+import { HotelRoom } from "@/features/rooms/types/room.types";
+
 export interface Hotel {
   id: string;
   name: string;
   image: string;
+  imageId: string;
   country: string;
   city: string;
   shortDescription: string;
-}
-
-export interface HotelRoom {
-  id: string;
-  roomType: string;
-  shortDescription: string;
-  description: string;
-  amenities: string[];
-  pricePerNight: string;
-  maxGuests: number;
-  images: string[];
-  isAvailable: boolean;
 }
 
 export interface HotelDetails extends Hotel {
@@ -24,7 +15,31 @@ export interface HotelDetails extends Hotel {
   contact: string;
   description: string;
   facilities: string[];
+  ownerId: string;
   rooms: HotelRoom[];
+}
+
+export interface Booking {
+  id: string;
+  userId: string;
+  hotelId: string;
+  roomId: string;
+  checkInDate: string;
+  checkOutDate: string;
+  totalPrice: string;
+  guests: number;
+  status: "PENDING" | "CONFIRMED" | "CANCELLED";
+  paymentMethod: "PAY_AT_HOTEL" | "CARD";
+  isPaid: boolean;
+  createdAt: string;
+  updatedAt: string;
+  user: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  };
 }
 
 export interface RegisterHotelPayload {

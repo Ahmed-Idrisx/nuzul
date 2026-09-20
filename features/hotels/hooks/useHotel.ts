@@ -33,6 +33,9 @@ export function useCreateHotel() {
       queryClient.invalidateQueries({
         queryKey: ["hotels"],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["user"],
+      });
     },
   });
 }

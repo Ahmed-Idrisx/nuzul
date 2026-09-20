@@ -13,9 +13,10 @@ import { useCreateHotel } from "../hooks/useHotel";
 import { toast } from "react-toastify";
 import { useAppContext } from "@/context/AppContext";
 import { assets } from "@/assets";
-import { FiMapPin, FiPhone, FiUpload, FiX } from "react-icons/fi";
+import { FiUpload, FiX } from "react-icons/fi";
 import FormInput from "@/components/shared/FormInput";
 import { facilitiesOptions } from "@/constant/site";
+import FormTextArea from "@/components/shared/FormTextArea";
 
 export default function CreateHotelForm() {
   const { setShowHotelReg } = useAppContext();
@@ -217,86 +218,36 @@ export default function CreateHotelForm() {
 
           {/* Hotel Address */}
           <div className="mt-4">
-            <label
-              htmlFor="address"
-              className="text-text-muted text-sm font-semibold sm:text-lg"
-            >
-              Address
-            </label>
-
-            <textarea
-              id="address"
-              placeholder="Enter your hotel address"
+            <FormTextArea
+              label="Address"
+              name="address"
               rows={2}
-              {...register("address")}
-              className={`mt-2 w-full resize-none rounded-xl border bg-bg px-5 py-3 text-sm text-text outline-none transition-colors placeholder:text-text-muted sm:text-base ${
-                errors.address
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:border-primary-dark"
-              }`}
+              placeholder="Enter your hotel address"
+              register={register}
+              error={errors.address}
             />
-
-            {errors.address && (
-              <p className="mt-1 text-xs font-medium text-red-500">
-                {errors.address.message}
-              </p>
-            )}
           </div>
-
           {/* Short Description */}
           <div className="mt-4">
-            <label
-              htmlFor="shortDescription"
-              className="text-text-muted text-sm font-semibold sm:text-lg"
-            >
-              Short Description
-            </label>
-
-            <textarea
-              id="shortDescription"
-              placeholder="Write a short description about your hotel"
+            <FormTextArea
+              label="Short Description"
+              name="shortDescription"
               rows={2}
-              {...register("shortDescription")}
-              className={`mt-2 w-full resize-none rounded-xl border bg-bg px-5 py-3 text-sm text-text outline-none transition-colors placeholder:text-text-muted sm:text-base ${
-                errors.shortDescription
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:border-primary-dark"
-              }`}
+              placeholder="Write a short description about your hotel"
+              register={register}
+              error={errors.shortDescription}
             />
-
-            {errors.shortDescription && (
-              <p className="mt-1 text-xs font-medium text-red-500">
-                {errors.shortDescription.message}
-              </p>
-            )}
           </div>
-
           {/* Description */}
           <div className="mt-4">
-            <label
-              htmlFor="description"
-              className="text-text-muted text-sm font-semibold sm:text-lg"
-            >
-              Hotel Description
-            </label>
-
-            <textarea
-              id="description"
-              placeholder="Tell guests more about your hotel..."
+            <FormTextArea
+              label="Hotel Description"
+              name="description"
               rows={4}
-              {...register("description")}
-              className={`mt-2 w-full resize-none rounded-xl border bg-bg px-5 py-3 text-sm text-text outline-none transition-colors placeholder:text-text-muted sm:text-base ${
-                errors.description
-                  ? "border-red-500 focus:border-red-500"
-                  : "border-gray-300 focus:border-primary-dark"
-              }`}
+              placeholder="Tell guests more about your hotel..."
+              register={register}
+              error={errors.description}
             />
-
-            {errors.description && (
-              <p className="mt-1 text-xs font-medium text-red-500">
-                {errors.description.message}
-              </p>
-            )}
           </div>
 
           {/* Facilities */}
