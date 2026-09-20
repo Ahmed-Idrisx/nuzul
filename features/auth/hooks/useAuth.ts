@@ -19,7 +19,8 @@ export function useLogin() {
 
     onSuccess: (res) => {
       // update the profile data in the cache after a successful update
-      queryClient.setQueryData(["profile"], res.data[0]);
+
+      queryClient.setQueryData(["user"], res.data[0]);
     },
   });
 }
