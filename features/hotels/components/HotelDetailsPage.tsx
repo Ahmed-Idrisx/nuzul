@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import {
   FiArrowLeft,
   FiCheck,
+  FiChevronDown,
   FiImage,
   FiMapPin,
   FiPhone,
@@ -15,8 +17,90 @@ import Spinner from "@/components/ui/Spinner";
 
 import { useHotel } from "../hooks/useHotel";
 
+interface FilterOption {
+  label: string;
+  value: string;
+}
+
+function FilterDropdown({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: FilterOption[];
+  onChange: (value: string) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const selectedOption = options.find((option) => option.value === value);
+  const dropdownId = label.toLowerCase().replaceAll(" ", "-");
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!dropdownRef.current?.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
+  }, []);
+
+  return (
+    <div ref={dropdownRef} className="relative text-sm font-semibold text-text">
+      <span className="mb-2 block text-xs uppercase tracking-[0.16em] text-text-muted">
+        {label}
+      </span>
+      <button
+        type="button"
+        id={dropdownId}
+        aria-haspopup="listbox"
+        aria-expanded={isOpen}
+        onClick={() => setIsOpen((open) => !open)}
+        className="flex h-11 w-full items-center justify-between gap-3 rounded-xl border border-border bg-white px-3 text-left font-normal text-text outline-none transition hover:border-primary focus:border-primary focus:ring-4 focus:ring-primary/10"
+      >
+        <span className="truncate">{selectedOption?.label}</span>
+        <FiChevronDown
+          className={`shrink-0 text-primary transition-transform ${isOpen ? "rotate-180" : ""}`}
+          aria-hidden="true"
+        />
+      </button>
+      {isOpen && (
+        <div
+          role="listbox"
+          aria-labelledby={dropdownId}
+          className="absolute inset-x-0 top-full z-20 mt-2 overflow-hidden rounded-xl border border-border bg-white p-1 shadow-xl"
+        >
+          {options.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              role="option"
+              aria-selected={option.value === value}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+              className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${option.value === value ? "bg-primary/10 font-semibold text-primary" : "text-text-muted hover:bg-primary/5 hover:text-text"}`}
+            >
+              {option.label}
+              {option.value === value && <FiCheck aria-hidden="true" />}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function HotelDetailsPage({ hotelId }: { hotelId: string }) {
   const { data: hotel, isLoading, isError } = useHotel(hotelId);
+  const [roomTypeFilter, setRoomTypeFilter] = useState("All");
+  const [priceRange, setPriceRange] = useState("all");
+  const [sortBy, setSortBy] = useState("recommended");
 
   if (isLoading) return <Spinner />;
 
@@ -40,6 +124,39 @@ export default function HotelDetailsPage({ hotelId }: { hotelId: string }) {
       </main>
     );
   }
+
+  const roomTypes = [
+    "All",
+    ...Array.from(new Set(hotel.rooms.map((room) => room.roomType))),
+  ];
+  const filteredRooms = hotel.rooms
+    .filter((room) => {
+      const price = Number(room.pricePerNight);
+      const matchesRoomType =
+        roomTypeFilter === "All" || room.roomType === roomTypeFilter;
+      const matchesPrice =
+        priceRange === "all" ||
+        (priceRange === "under-100" && price < 100) ||
+        (priceRange === "100-200" && price >= 100 && price <= 200) ||
+        (priceRange === "over-200" && price > 200);
+
+      return matchesRoomType && matchesPrice;
+    })
+    .sort((firstRoom, secondRoom) => {
+      if (sortBy === "price-low") {
+        return (
+          Number(firstRoom.pricePerNight) - Number(secondRoom.pricePerNight)
+        );
+      }
+
+      if (sortBy === "price-high") {
+        return (
+          Number(secondRoom.pricePerNight) - Number(firstRoom.pricePerNight)
+        );
+      }
+
+      return 0;
+    });
 
   return (
     <main className="px-5 pb-24 pt-28 sm:px-8 lg:px-14 xl:px-24">
@@ -161,13 +278,49 @@ export default function HotelDetailsPage({ hotelId }: { hotelId: string }) {
               </h2>
             </div>
             <span className="text-sm text-text-muted">
-              {hotel.rooms.length} {hotel.rooms.length === 1 ? "room" : "rooms"}
+              {filteredRooms.length}{" "}
+              {filteredRooms.length === 1 ? "room" : "rooms"}
             </span>
           </div>
 
-          {hotel.rooms.length > 0 ? (
+          {hotel.rooms.length > 0 && (
+            <div className="mt-6 grid gap-4 rounded-t-2xl border border-border bg-cream-bg p-5 sm:p-6 lg:grid-cols-[1.5fr_1fr_1fr] lg:items-end">
+              <FilterDropdown
+                label="Popular filters (room type)"
+                value={roomTypeFilter}
+                options={roomTypes.map((roomType) => ({
+                  value: roomType,
+                  label: roomType === "All" ? "All room types" : roomType,
+                }))}
+                onChange={setRoomTypeFilter}
+              />
+              <FilterDropdown
+                label="Price range"
+                value={priceRange}
+                options={[
+                  { value: "all", label: "All prices" },
+                  { value: "under-100", label: "Under $100" },
+                  { value: "100-200", label: "$100 - $200" },
+                  { value: "over-200", label: "Over $200" },
+                ]}
+                onChange={setPriceRange}
+              />
+              <FilterDropdown
+                label="Sort by"
+                value={sortBy}
+                options={[
+                  { value: "recommended", label: "Recommended" },
+                  { value: "price-low", label: "Price: low to high" },
+                  { value: "price-high", label: "Price: high to low" },
+                ]}
+                onChange={setSortBy}
+              />
+            </div>
+          )}
+
+          {filteredRooms.length > 0 ? (
             <div className="divide-y divide-border">
-              {hotel.rooms.map((room) => (
+              {filteredRooms.map((room) => (
                 <Link
                   href={`/hotels/${hotel.id}/${room.id}`}
                   key={room.id}
@@ -233,7 +386,7 @@ export default function HotelDetailsPage({ hotelId }: { hotelId: string }) {
             </div>
           ) : (
             <p className="py-12 text-center text-text-muted">
-              No rooms are available at this hotel yet.
+              No rooms match the selected filters.
             </p>
           )}
         </section>
