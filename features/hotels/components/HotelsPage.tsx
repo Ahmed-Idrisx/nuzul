@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { FiArrowUpRight, FiImage, FiMapPin } from "react-icons/fi";
+import { useState } from "react";
+import { FiArrowUpRight, FiImage, FiMapPin, FiSearch } from "react-icons/fi";
 
 import Spinner from "@/components/ui/Spinner";
 
@@ -64,14 +65,13 @@ function HotelDetails({
 
 export default function HotelsPage({ destination }: { destination: string }) {
   const { data: hotels, isLoading, isError } = useHotels();
-  const normalizedDestination = destination.trim().toLowerCase();
-  const filteredHotels = normalizedDestination
-    ? (hotels ?? []).filter((hotel) =>
-        [hotel.city, hotel.country].some((value) =>
-          value.toLowerCase().includes(normalizedDestination),
-        ),
-      )
-    : (hotels ?? []);
+  const [searchTerm, setSearchTerm] = useState(destination);
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  const filteredHotels = (hotels ?? []).filter((hotel) =>
+    [hotel.name, hotel.city, hotel.country].some((value) =>
+      value.toLowerCase().includes(normalizedSearchTerm),
+    ),
+  );
 
   if (isLoading) {
     return <Spinner />;
@@ -93,31 +93,10 @@ export default function HotelsPage({ destination }: { destination: string }) {
     );
   }
 
-  if (!filteredHotels.length) {
-    return (
-      <main className="mx-auto flex min-h-[60vh] max-w-3xl items-center justify-center px-5 py-24 text-center">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
-            Nuzul stays
-          </p>
-          <h1 className="font-playfair mt-3 text-4xl font-bold text-text">
-            {normalizedDestination
-              ? `No stays found in ${destination}.`
-              : "New stays are on their way."}
-          </h1>
-          <p className="mt-4 text-text-muted">
-            {normalizedDestination
-              ? "Try another city or explore the full Nuzul collection."
-              : "There are no hotels to show right now. Check back soon for a new place to stay."}
-          </p>
-        </div>
-      </main>
-    );
-  }
   return (
     <main className="px-5 pb-24 pt-28 sm:px-8 lg:px-14 xl:px-24">
       <div className="mx-auto max-w-7xl">
-        <div className="pb-14 lg:pb-20">
+        <div className="pb-5">
           <p className="mb-5 text-sm font-semibold uppercase tracking-[0.22em] text-primary">
             The Nuzul collection
           </p>
@@ -136,18 +115,59 @@ export default function HotelsPage({ destination }: { destination: string }) {
           </div>
         </div>
 
-        <section className="space-y-16 lg:space-y-24">
-          {filteredHotels.map((hotel, index) => (
-            <Link
-              href={`/hotels/${hotel.id}`}
-              key={hotel.id}
-              className={`group grid overflow-hidden bg-cream-bg border-y rounded-2xl border-border/80 md:grid-cols-2 ${index % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
-            >
-              <HotelImage image={hotel.image || null} name={hotel.name} />
-              <HotelDetails hotel={hotel} />
-            </Link>
-          ))}
-        </section>
+        <div className="mb-10">
+          <label
+            htmlFor="hotel-search"
+            className="mb-2 block font-semibold text-text"
+          >
+            Search hotels
+          </label>
+          <div className="relative">
+            <FiSearch
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary"
+              aria-hidden="true"
+            />
+            <input
+              id="hotel-search"
+              type="search"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search by hotel name, city, or country"
+              className="h-14 w-full rounded-2xl border border-border bg-cream-bg pl-11 pr-4 text-text outline-none transition placeholder:text-text-muted/70 focus:border-primary focus:ring-4 focus:ring-primary/10"
+            />
+          </div>
+        </div>
+
+        {filteredHotels.length > 0 ? (
+          <section className="space-y-10">
+            {filteredHotels.map((hotel, index) => (
+              <Link
+                href={`/hotels/${hotel.id}`}
+                key={hotel.id}
+                className={`group grid overflow-hidden bg-cream-bg border-y rounded-2xl border-border/80 md:grid-cols-2 ${index % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
+              >
+                <HotelImage image={hotel.image || null} name={hotel.name} />
+                <HotelDetails hotel={hotel} />
+              </Link>
+            ))}
+          </section>
+        ) : (
+          <div className="py-16 text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">
+              Nuzul stays
+            </p>
+            <h2 className="font-playfair mt-3 text-4xl font-bold text-text">
+              {normalizedSearchTerm
+                ? `No stays found for "${searchTerm}".`
+                : "New stays are on their way."}
+            </h2>
+            <p className="mt-4 text-text-muted">
+              {normalizedSearchTerm
+                ? "Try another hotel name, city, or country."
+                : "There are no hotels to show right now. Check back soon for a new place to stay."}
+            </p>
+          </div>
+        )}
       </div>
     </main>
   );
