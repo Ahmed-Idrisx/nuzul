@@ -105,7 +105,8 @@ export const cities: string[] = [
   "Khartoum",
   "Cairo",
   "Dubai",
-  "Singapore",
-  "New York",
-  "London",
+  "Aswan",
+  "Luxor",
+  "Alexandria",
+  "Hurghada",
 ];

@@ -52,10 +52,47 @@ export const createBookingSchema = bookingPayloadSchema;
 export type CheckAvailabilityFormData = z.infer<typeof checkAvailabilitySchema>;
 export type CreateBookingFormData = z.infer<typeof createBookingSchema>;
 
-export const heroSearchSchema = z.object({
-  destination: z.string().trim().min(1, "Choose a destination"),
-  checkInDate: z.string().optional(),
-  checkOutDate: z.string().optional(),
-  guests: z.number().int().min(1).max(20),
-});
+export const heroSearchSchema = z
+  .object({
+    destination: z.string().trim().min(1, "Choose a destination"),
+    checkInDate: z.string().optional(),
+    checkOutDate: z.string().optional(),
+    guests: z.number().int().min(1).max(20),
+  })
+  .superRefine((data, context) => {
+    const today = new Date();
+    const todayString = [
+      today.getFullYear(),
+      String(today.getMonth() + 1).padStart(2, "0"),
+      String(today.getDate()).padStart(2, "0"),
+    ].join("-");
+
+    if (data.checkInDate && data.checkInDate < todayString) {
+      context.addIssue({
+        code: "custom",
+        path: ["checkInDate"],
+        message: "Check-in date cannot be in the past",
+      });
+    }
+
+    if (data.checkOutDate && data.checkOutDate < todayString) {
+      context.addIssue({
+        code: "custom",
+        path: ["checkOutDate"],
+        message: "Check-out date cannot be in the past",
+      });
+    }
+
+    if (
+      data.checkInDate &&
+      data.checkOutDate &&
+      data.checkOutDate <= data.checkInDate
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["checkOutDate"],
+        message: "Check-out date must be after check-in date",
+      });
+    }
+  });
 export type HeroSearchFormData = z.infer<typeof heroSearchSchema>;

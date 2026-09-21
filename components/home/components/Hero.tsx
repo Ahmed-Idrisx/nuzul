@@ -2,7 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { FiCalendar, FiMapPin, FiSearch, FiUsers } from "react-icons/fi";
+import { useEffect, useRef, useState } from "react";
+import {
+  FiCalendar,
+  FiChevronDown,
+  FiMapPin,
+  FiSearch,
+  FiUsers,
+} from "react-icons/fi";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -13,13 +20,16 @@ import {
   heroSearchSchema,
 } from "@/features/bookings/schemas/booking.schema";
 import { cities } from "@/constant/site";
+import { useAppContext } from "@/context/AppContext";
 
 export default function Hero() {
   const router = useRouter();
   const storeRecentSearch = useStoreRecentSearchedCity();
+  const { setSearchedCities } = useAppContext();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<HeroSearchFormData>({
     resolver: zodResolver(heroSearchSchema),
@@ -30,11 +40,33 @@ export default function Hero() {
       guests: 1,
     },
   });
+  const [isDestinationOpen, setIsDestinationOpen] = useState(false);
+  const [selectedCity, setSelectedCity] = useState("");
+  const destinationRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!destinationRef.current?.contains(event.target as Node)) {
+        setIsDestinationOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
+  }, []);
 
   const onSearch = (data: HeroSearchFormData) => {
     const searchParams = new URLSearchParams({
       destination: data.destination,
     });
+    setSearchedCities((previousCities) =>
+      [
+        data.destination,
+        ...previousCities.filter(
+          (city) => city.toLowerCase() !== data.destination.toLowerCase(),
+        ),
+      ].slice(0, 5),
+    );
     storeRecentSearch.mutate({ city: data.destination });
     router.push(`/hotels?${searchParams.toString()}`);
   };
@@ -66,9 +98,9 @@ export default function Hero() {
 
         <form
           onSubmit={handleSubmit(onSearch)}
-          className="mt-10 grid gap-3 rounded-3xl border border-white/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-4 lg:grid-cols-[1.4fr_1fr_1fr_.7fr_auto] lg:items-end lg:rounded-2xl"
+          className="mt-10 grid gap-3 rounded-3xl border border-white/30 bg-white/95 p-3 shadow-2xl backdrop-blur-md sm:p-4 lg:grid-cols-[1.4fr_1fr_1fr_.7fr_auto] lg:items-start lg:rounded-2xl"
         >
-          <div className="min-w-0">
+          <div ref={destinationRef} className="relative min-w-0">
             <label
               htmlFor="destination"
               className="mb-2 flex items-center gap-2 px-1 font-semibold uppercase tracking-wide text-text-muted"
@@ -76,24 +108,55 @@ export default function Hero() {
               <FiMapPin className="text-primary" aria-hidden="true" />{" "}
               Destination
             </label>
-            <input
+            <input type="hidden" {...register("destination")} />
+            <button
+              type="button"
               id="destination"
-              type="text"
-              list="destinations"
-              placeholder="Where are you going?"
-              {...register("destination")}
-              className="h-12 w-full rounded-xl border border-border bg-white px-4 text-text outline-none transition placeholder:text-text-muted/70 focus:border-primary focus:ring-4 focus:ring-primary/10"
-            />
-            <datalist id="destinations">
-              {cities.map((city, index) => (
-                <option key={index} value={city} />
-              ))}
-            </datalist>
-            {errors.destination && (
-              <p className="mt-1 px-1 text-xs text-red-600">
-                {errors.destination.message}
-              </p>
+              aria-haspopup="listbox"
+              aria-expanded={isDestinationOpen}
+              onClick={() => setIsDestinationOpen((open) => !open)}
+              className="flex h-12 w-full items-center justify-between gap-3 rounded-xl border border-border bg-white px-4 text-left text-text outline-none transition hover:border-primary focus:border-primary focus:ring-4 focus:ring-primary/10"
+            >
+              <span
+                className={selectedCity ? "text-text" : "text-text-muted/70"}
+              >
+                {selectedCity || "Where are you going?"}
+              </span>
+              <FiChevronDown
+                className={`shrink-0 text-primary transition-transform ${isDestinationOpen ? "rotate-180" : ""}`}
+                aria-hidden="true"
+              />
+            </button>
+            {isDestinationOpen && (
+              <ul
+                role="listbox"
+                aria-label="Destinations"
+                className="absolute inset-x-0 top-full z-30 mt-2 max-h-60 overflow-y-auto rounded-xl border border-border bg-white p-1 shadow-xl"
+              >
+                {cities.map((city) => (
+                  <li
+                    key={city}
+                    role="option"
+                    aria-selected={selectedCity === city}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedCity(city);
+                        setValue("destination", city, { shouldValidate: true });
+                        setIsDestinationOpen(false);
+                      }}
+                      className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${selectedCity === city ? "bg-primary/10 font-semibold text-primary" : "text-text-muted hover:bg-primary/5 hover:text-text"}`}
+                    >
+                      {city}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             )}
+            <p className="mt-1 min-h-4 px-1 text-xs text-red-600">
+              {errors.destination?.message ?? " "}
+            </p>
           </div>
 
           <div>
@@ -110,6 +173,9 @@ export default function Hero() {
               {...register("checkInDate")}
               className="h-12 w-full rounded-xl border border-border bg-white px-4 text-text outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
             />
+            <p className="mt-1 min-h-4 px-1 text-xs text-red-600">
+              {errors.checkInDate?.message ?? " "}
+            </p>
           </div>
 
           <div>
@@ -126,6 +192,9 @@ export default function Hero() {
               {...register("checkOutDate")}
               className="h-12 w-full rounded-xl border border-border bg-white px-4 text-text outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10"
             />
+            <p className="mt-1 min-h-4 px-1 text-xs text-red-600">
+              {errors.checkOutDate?.message ?? " "}
+            </p>
           </div>
 
           <div>
@@ -147,7 +216,7 @@ export default function Hero() {
 
           <button
             type="submit"
-            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 font-semibold text-white transition hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-primary/25 active:scale-[.98] lg:min-w-32"
+            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 font-semibold text-white transition hover:bg-primary-dark focus:outline-none focus:ring-4 focus:ring-primary/25 active:scale-[.98] lg:mt-7 lg:min-w-32"
           >
             <FiSearch aria-hidden="true" /> Search
           </button>
