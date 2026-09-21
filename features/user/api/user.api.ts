@@ -1,6 +1,10 @@
 import { apiRequest } from "@/lib/api-client";
 
-import type { User } from "../types/user.types";
+import type {
+  StoreRecentSearchedCityPayload,
+  StoreRecentSearchedCityResponse,
+  User,
+} from "../types/user.types";
 
 export const userApi = {
   getUser: () =>
@@ -10,6 +14,12 @@ export const userApi = {
 
   updateUser: (payload: FormData) =>
     apiRequest<User>("/user/me", {
+      method: "POST",
+      body: payload,
+    }),
+
+  storeRecentSearchedCity: (payload: StoreRecentSearchedCityPayload) =>
+    apiRequest<StoreRecentSearchedCityResponse>("/user/store-recent-search", {
       method: "POST",
       body: payload,
     }),

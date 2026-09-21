@@ -3,6 +3,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "../api/user.api";
 
+import type { StoreRecentSearchedCityPayload, User } from "../types/user.types";
+
 export function useUser(enabled: boolean) {
   return useQuery({
     queryKey: ["user"],
@@ -21,6 +23,25 @@ export function useUpdateUser() {
 
     onSuccess: (res) => {
       queryClient.setQueryData(["user"], res.data[0]);
+    },
+  });
+}
+
+export function useStoreRecentSearchedCity() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: StoreRecentSearchedCityPayload) =>
+      userApi.storeRecentSearchedCity(payload),
+
+    onSuccess: (res) => {
+      const recentSearchedCities = res.data[0]?.recentSearchedCities;
+
+      if (recentSearchedCities) {
+        queryClient.setQueryData<User>(["user"], (currentUser) =>
+          currentUser ? { ...currentUser, recentSearchedCities } : currentUser,
+        );
+      }
     },
   });
 }

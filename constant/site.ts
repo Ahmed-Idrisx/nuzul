@@ -100,3 +100,12 @@ export const roomTypeOptions = [
   "Luxury Room",
   "Family Suite",
 ];
+
+export const cities: string[] = [
+  "Khartoum",
+  "Cairo",
+  "Dubai",
+  "Singapore",
+  "New York",
+  "London",
+];

@@ -23,3 +23,11 @@ export const updateUserSchema = z.object({
 });
 
 export type UpdateUserFormData = z.infer<typeof updateUserSchema>;
+
+export const StoreRecentSearchedCitySchema = z.object({
+  city: z.string().trim().min(1, "City is required"),
+});
+
+export type StoreRecentSearchedCityFormData = z.infer<
+  typeof StoreRecentSearchedCitySchema
+>;

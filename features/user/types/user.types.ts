@@ -60,3 +60,11 @@ export interface UpdateUserPayload {
   phone?: string;
   image?: File;
 }
+
+export interface StoreRecentSearchedCityPayload {
+  city: string;
+}
+
+export interface StoreRecentSearchedCityResponse {
+  recentSearchedCities: string[];
+}
