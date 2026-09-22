@@ -22,6 +22,23 @@ export interface Booking {
     email: string;
     phone: string;
   };
+  hotel: {
+    id: string;
+    name: string;
+    shortDescription: string;
+    description: string;
+    facilities: string[];
+    image: string | null;
+    imageId: string | null;
+    address: string;
+    country: string;
+    city: string;
+    contact: string;
+    ownerId: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+  room: HotelRoom;
 }
 
 export interface Hotel {
