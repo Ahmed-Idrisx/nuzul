@@ -15,10 +15,8 @@ import { ApiError } from "@/lib/api-client";
 import { useAuth } from "@/context/AuthContext";
 
 export default function VerifyOtpForm() {
-  console.log("VerifyOtpForm rendered");
   const router = useRouter();
   const { email, flow, setOtp, clearAuth } = useAuth();
-  console.log("AUTH:", { email, flow });
 
   const { mutateAsync: verifyOtp, isPending } = useVerifyOtp();
 

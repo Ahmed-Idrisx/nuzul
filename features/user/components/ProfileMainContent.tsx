@@ -9,8 +9,6 @@ import ProfileForm from "@/features/user/components/ProfileForm";
 export default function ProfileMainContent() {
   const { user, isLoading } = useAppContext();
 
-  console.log("PROFILE:", { user, isLoading });
-
   if (isLoading) {
     return <Spinner />;
   }

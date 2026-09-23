@@ -11,8 +11,9 @@ import "react-toastify/dist/ReactToastify.css";
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
-      {/* only in development */}
-      <ReactQueryDevtools initialIsOpen={false} />
+      {process.env.NODE_ENV === "development" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
       <AuthProvider>
         <AppProvider>
           {children}
