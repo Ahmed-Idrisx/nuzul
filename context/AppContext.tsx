@@ -40,6 +40,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     router.push("/login");
   };
 
+  const availableSearchedCities =
+    searchedCities.length > 0
+      ? searchedCities
+      : (user?.recentSearchedCities ?? []);
+
   return (
     <AppContext.Provider
       value={{
@@ -49,7 +54,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         logout,
         showHotelReg,
         setShowHotelReg,
-        searchedCities,
+        searchedCities: availableSearchedCities,
         setSearchedCities,
       }}
     >
