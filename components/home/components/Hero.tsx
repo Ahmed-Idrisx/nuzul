@@ -72,7 +72,7 @@ export default function Hero() {
   };
 
   return (
-    <main className="relative isolate flex min-h-screen items-center overflow-hidden px-5 py-16 pt-20 sm:px-8 lg:px-14 xl:px-24">
+    <main className="relative z-10 isolate flex min-h-screen items-center overflow-visible px-5 py-16 pt-20 sm:px-8 lg:px-14 xl:px-24">
       <Image
         src={assets.hero}
         alt="A welcoming hotel room"
