@@ -18,15 +18,10 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 110px;
 }
 
 body {
   overflow-x: hidden;
-}
-
-section[id] {
-  scroll-margin-top: 110px;
 }
 
 .font-playfair {
