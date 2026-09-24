@@ -1,7 +1,18 @@
+import type { Metadata } from "next";
+
 import { assets } from "@/assets";
 import { site } from "@/constant/site";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: {
+    template: "%s | Nuzul",
+    default: "Account | Nuzul",
+  },
+  description:
+    "Sign in, create your account, recover your password, or verify your booking details with Nuzul.",
+};
 
 type AuthLayoutProps = {
   children: React.ReactNode;

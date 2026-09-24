@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Spinner from "@/components/ui/Spinner";
 import { useAppContext } from "@/context/AppContext";
+import { formatDate } from "../utils/formatDate";
+import { formatCurrency } from "../utils/formatCurrency";
 
 const statusClasses = {
   PENDING: "bg-amber-100 text-amber-700",
@@ -15,15 +17,6 @@ const paymentLabelMap = {
   CARD: "Card",
   PAY_AT_HOTEL: "Pay at Hotel",
 } as const;
-
-const formatDate = (value: string) =>
-  new Date(value).toLocaleDateString("en-US", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-
-const formatCurrency = (value: string) => `$${Number(value || 0).toFixed(2)}`;
 
 export default function MyBookingsPage() {
   const { user, isLoading } = useAppContext();
@@ -103,9 +96,6 @@ export default function MyBookingsPage() {
               const roomType = booking.room?.roomType || "Room";
               const roomImage =
                 booking.hotel?.image || booking.room?.images?.[0] || null;
-              const isUnpaid =
-                !booking.isPaid && booking.status !== "CANCELLED";
-
               return (
                 <div
                   key={booking.id}
@@ -148,15 +138,6 @@ export default function MyBookingsPage() {
                           >
                             {booking.status}
                           </span>
-
-                          {isUnpaid && (
-                            <Link
-                              href={`/payment?bookingId=${booking.id}`}
-                              className="inline-flex items-center justify-center rounded-full bg-primary/10 px-3 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/15"
-                            >
-                              Unpaid • Pay now
-                            </Link>
-                          )}
                         </div>
                       </div>
 

@@ -1,10 +1,20 @@
-import Hero from "@/components/home/components/Hero";
-import Mood from "@/components/home/components/Mood";
-import RecommendedHotels from "@/components/home/components/RecommendedHotels";
-import Stories from "@/components/home/components/Stories";
-import FAQ from "@/components/home/components/FAQ";
-import GetApp from "@/components/home/components/GetApp";
-import Contact from "@/components/home/components/Contact";
+import type { Metadata } from "next";
+
+import {
+  Contact,
+  FAQ,
+  GetApp,
+  Hero,
+  Mood,
+  RecommendedHotels,
+  Stories,
+} from "@/features/home";
+
+export const metadata: Metadata = {
+  title: "Nuzul | Find your next stay",
+  description:
+    "Discover beautiful stays, unique hotels, and memorable getaways with Nuzul.",
+};
 
 export default function page() {
   return (
