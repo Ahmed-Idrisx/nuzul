@@ -36,10 +36,6 @@ export const navLinks = [
     href: "#faq",
   },
   {
-    title: "Blog",
-    href: "#blog",
-  },
-  {
     title: "Support",
     href: "#support",
   },

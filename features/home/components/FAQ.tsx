@@ -10,7 +10,7 @@ export default function FAQ() {
   const visibleQuestions = showAll ? questions : questions.slice(0, 6);
 
   return (
-    <section className="px-5 py-20 sm:px-8 lg:px-14 lg:py-28 xl:px-24">
+    <section id="faq" className="px-5 py-20 sm:px-8 lg:px-14 lg:py-28 xl:px-24">
       <div className="mx-auto max-w-7xl">
         <div className="text-center">
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-primary sm:text-base">

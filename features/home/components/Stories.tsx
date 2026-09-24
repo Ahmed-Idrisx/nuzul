@@ -2,7 +2,10 @@ import { testimonials } from "@/constant/site";
 
 export default function Stories() {
   return (
-    <section className="bg-cream-bg px-5 py-20 sm:px-8 lg:px-14 lg:py-28 xl:px-24">
+    <section
+      id="stories"
+      className="bg-cream-bg px-5 py-20 sm:px-8 lg:px-14 lg:py-28 xl:px-24"
+    >
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <span className="text-sm font-semibold uppercase tracking-[0.2em] text-primary sm:text-base">

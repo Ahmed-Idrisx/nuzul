@@ -9,6 +9,7 @@ export default function Contact() {
 
   return (
     <section
+      id="support"
       className="px-5 py-20 sm:px-8 lg:px-14 lg:py-28 xl:px-24"
       onClick={() => setIsContactMenuOpen(false)}
     >
