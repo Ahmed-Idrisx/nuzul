@@ -21,7 +21,7 @@ export const site = {
 export const navLinks = [
   {
     title: "Explore",
-    href: "#explore",
+    href: "/#explore",
   },
   {
     title: "Hotels",
@@ -29,15 +29,15 @@ export const navLinks = [
   },
   {
     title: "Stories",
-    href: "#stories",
+    href: "/#stories",
   },
   {
     title: "FAQ",
-    href: "#faq",
+    href: "/#faq",
   },
   {
     title: "Support",
-    href: "#support",
+    href: "/#support",
   },
 ];
 
