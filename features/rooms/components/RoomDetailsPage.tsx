@@ -18,7 +18,7 @@ import {
 } from "react-icons/fi";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 import Spinner from "@/components/ui/Spinner";
 import { useAppContext } from "@/context/AppContext";

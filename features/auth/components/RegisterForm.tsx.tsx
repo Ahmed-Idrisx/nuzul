@@ -12,7 +12,7 @@ import FormInput from "@/components/shared/FormInput";
 import AuthHeader from "./AuthHeader";
 import { RegisterFormData, registerSchema } from "../schemas/auth.schema";
 import { useRegister } from "../hooks/useAuth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { ApiError } from "@/lib/api-client";
 import { useAuth } from "@/context/AuthContext";
 

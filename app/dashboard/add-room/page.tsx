@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import MainButton from "@/components/shared/MainButton";
 import FormInput from "@/components/shared/FormInput";
 import { assets } from "@/assets";

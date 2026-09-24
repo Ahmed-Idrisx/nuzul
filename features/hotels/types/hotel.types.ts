@@ -1,4 +1,5 @@
 import { HotelRoom } from "@/features/rooms/types/room.types";
+import type { BookingStatus } from "@/features/user/types/user.types";
 
 export interface Hotel {
   id: string;
@@ -28,7 +29,7 @@ export interface Booking {
   checkOutDate: string;
   totalPrice: string;
   guests: number;
-  status: "PENDING" | "CONFIRMED" | "CANCELLED";
+  status: BookingStatus;
   paymentMethod: "PAY_AT_HOTEL" | "CARD";
   isPaid: boolean;
   createdAt: string;

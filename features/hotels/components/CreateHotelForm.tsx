@@ -10,7 +10,7 @@ import {
   type CreateHotelFormData,
 } from "../schemas/hotel.schema";
 import { useCreateHotel } from "../hooks/useHotel";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { useAppContext } from "@/context/AppContext";
 import { assets } from "@/assets";
 import { FiUpload, FiX } from "react-icons/fi";

@@ -5,8 +5,7 @@ import { queryClient } from "@/lib/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactNode } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "react-hot-toast";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -17,7 +16,7 @@ export function Providers({ children }: { children: ReactNode }) {
       <AuthProvider>
         <AppProvider>
           {children}
-          <ToastContainer position="top-right" autoClose={3000} theme="light" />
+          <Toaster position="top-right" />
         </AppProvider>
       </AuthProvider>
     </QueryClientProvider>

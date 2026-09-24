@@ -1,21 +1,159 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useAppContext } from "@/context/AppContext";
-import { Booking } from "@/features/user/types/user.types";
-import { FiX } from "react-icons/fi";
+import { Booking, BookingStatus } from "@/features/user/types/user.types";
+import { useUpdateBookingStatus } from "@/features/bookings/hooks/useBooking";
+import { FiCheck, FiChevronDown, FiX } from "react-icons/fi";
 import Image from "next/image";
 import MainButton from "@/components/shared/MainButton";
+import toast from "react-hot-toast";
+
+const bookingStatuses: BookingStatus[] = ["PENDING", "PAID", "CANCELLED"];
+
+const statusClasses: Record<BookingStatus, string> = {
+  PENDING: "border-amber-200 bg-amber-100 text-amber-700",
+  PAID: "border-emerald-200 bg-emerald-100 text-emerald-700",
+  CANCELLED: "border-rose-200 bg-rose-100 text-rose-700",
+};
+
+function StatusDropdown({
+  status,
+  disabled,
+  label,
+  onChange,
+}: {
+  status: BookingStatus;
+  disabled: boolean;
+  label: string;
+  onChange: (status: BookingStatus) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
+
+  const toggleDropdown = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+
+    setMenuPosition({
+      top: buttonRect.bottom + 8,
+      left: Math.max(8, buttonRect.right - 144),
+    });
+    setIsOpen((open) => !open);
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!dropdownRef.current?.contains(event.target as Node)) {
+        if (menuRef.current?.contains(event.target as Node)) return;
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [isOpen]);
+
+  return (
+    <div ref={dropdownRef} className="relative inline-block text-left">
+      <button
+        type="button"
+        disabled={disabled}
+        aria-label={label}
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        onClick={toggleDropdown}
+        className={`inline-flex cursor-pointer min-w-28 items-center justify-between gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold outline-none transition focus:ring-2 focus:ring-primary/30 disabled:cursor-wait disabled:opacity-60 ${statusClasses[status]}`}
+      >
+        {status}
+        <FiChevronDown
+          size={14}
+          className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
+        />
+      </button>
+
+      {isOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={menuRef}
+            role="listbox"
+            aria-label={label}
+            style={{ top: menuPosition.top, left: menuPosition.left }}
+            className="fixed z-100 min-w-36 overflow-hidden rounded-lg border border-gray-200 bg-white p-1 shadow-lg"
+          >
+            {bookingStatuses.map((option) => (
+              <button
+                key={option}
+                type="button"
+                role="option"
+                aria-selected={option === status}
+                onClick={() => {
+                  setIsOpen(false);
+                  if (option !== status) onChange(option);
+                }}
+                className={`flex w-full cursor-pointer items-center justify-between rounded-md px-3 py-2 text-left text-xs font-semibold ${statusClasses[option]}`}
+              >
+                {option}
+                {option === status && <FiCheck size={14} />}
+              </button>
+            ))}
+          </div>,
+          document.body,
+        )}
+    </div>
+  );
+}
 
 export default function HotelBookings() {
   const { user } = useAppContext();
   const bookings = user?.bookings ?? [];
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const updateBookingStatus = useUpdateBookingStatus();
 
   const rooms = user?.hotel?.rooms ?? [];
   const roomOf = (roomId: string) => rooms.find((room) => room.id === roomId);
   const roomTypeOf = (roomId: string) => roomOf(roomId)?.roomType ?? "—";
 
   const selectedRoom = selectedBooking ? roomOf(selectedBooking.roomId) : null;
+
+  const handleStatusChange = async (
+    booking: Booking,
+    selectedStatus: BookingStatus,
+  ) => {
+    if (user?.role !== "HOTEL_OWNER" || selectedStatus === booking.status) {
+      return;
+    }
+
+    const toastId = `booking-status-${booking.id}`;
+    toast.loading("Updating booking status...", { id: toastId });
+
+    try {
+      const response = await updateBookingStatus.mutateAsync({
+        bookingId: booking.id,
+        payload: { status: selectedStatus },
+      });
+
+      setSelectedBooking((currentBooking) =>
+        currentBooking?.id === booking.id
+          ? { ...currentBooking, status: selectedStatus }
+          : currentBooking,
+      );
+      toast.success(response.message || "Booking status updated successfully", {
+        id: toastId,
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Unable to update the booking status",
+        { id: toastId },
+      );
+    }
+  };
 
   return (
     <div>
@@ -83,7 +221,22 @@ export default function HotelBookings() {
                           ? "Pay at Hotel"
                           : "-"}
                     </td>
-                    <td className="p-4 whitespace-nowrap">{booking.status}</td>
+                    <td
+                      className="p-4 whitespace-nowrap"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <StatusDropdown
+                        status={booking.status}
+                        disabled={
+                          user?.role !== "HOTEL_OWNER" ||
+                          updateBookingStatus.isPending
+                        }
+                        label={`Change status for booking ${booking.id}`}
+                        onChange={(status) =>
+                          void handleStatusChange(booking, status)
+                        }
+                      />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -204,10 +357,14 @@ export default function HotelBookings() {
                 <span className="text-text font-semibold">Paid: </span>
                 {selectedBooking.isPaid ? "Yes" : "No"}
               </p>
-              <p>
+              <div className="flex items-center gap-3">
                 <span className="text-text font-semibold">Status: </span>
-                {selectedBooking.status}
-              </p>
+                <span
+                  className={`rounded-full border px-3 py-1.5 text-xs font-semibold ${statusClasses[selectedBooking.status]}`}
+                >
+                  {selectedBooking.status}
+                </span>
+              </div>
               <p>
                 <span className="text-text font-semibold">Booked On: </span>
                 {new Date(selectedBooking.createdAt).toLocaleString()}

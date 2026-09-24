@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { FiEye, FiUsers, FiX } from "react-icons/fi";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import MainButton from "@/components/shared/MainButton";
 import { useAppContext } from "@/context/AppContext";
 import { useToggleRoomAvailability } from "@/features/rooms/hooks/useRoom";
@@ -13,24 +13,21 @@ export default function ManageRooms() {
   const { user } = useAppContext();
   const toggleAvailability = useToggleRoomAvailability();
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-  const [updatingRoomId, setUpdatingRoomId] = useState<string | null>(null);
 
   const rooms = user?.hotel?.rooms ?? [];
 
   const selectedRoom = rooms.find((room) => room.id === selectedRoomId) ?? null;
 
   const handleAvailabilityChange = (room: HotelRoom) => {
-    setUpdatingRoomId(room.id);
+    const toastId = "room-availability";
+    toast.loading("Updating room availability...", { id: toastId });
 
     toggleAvailability.mutate(room.id, {
       onSuccess: (response) => {
-        toast.success(response.message);
+        toast.success(response.message, { id: toastId });
       },
       onError: (error) => {
-        toast.error(error.message);
-      },
-      onSettled: () => {
-        setUpdatingRoomId(null);
+        toast.error(error.message, { id: toastId });
       },
     });
   };
@@ -107,7 +104,7 @@ export default function ManageRooms() {
                             type="checkbox"
                             className="peer sr-only"
                             checked={room.isAvailable}
-                            disabled={updatingRoomId === room.id}
+                            disabled={toggleAvailability.isPending}
                             onChange={() => handleAvailabilityChange(room)}
                             aria-label={`Toggle ${room.roomType} availability`}
                           />

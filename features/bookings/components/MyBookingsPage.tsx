@@ -7,7 +7,7 @@ import { useAppContext } from "@/context/AppContext";
 
 const statusClasses = {
   PENDING: "bg-amber-100 text-amber-700",
-  CONFIRMED: "bg-emerald-100 text-emerald-700",
+  PAID: "bg-emerald-100 text-emerald-700",
   CANCELLED: "bg-rose-100 text-rose-700",
 } as const;
 

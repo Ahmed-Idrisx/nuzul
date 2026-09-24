@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiMail, FiPhone, FiSend, FiUser } from "react-icons/fi";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 import MainButton from "@/components/shared/MainButton";
 import FormInput from "@/components/shared/FormInput";

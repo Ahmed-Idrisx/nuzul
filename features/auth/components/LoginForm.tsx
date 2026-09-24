@@ -10,7 +10,7 @@ import FormInput from "@/components/shared/FormInput";
 import { FiSend } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useLogin } from "../hooks/useAuth";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { ApiError } from "@/lib/api-client";
 
 export function LoginForm() {
