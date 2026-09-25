@@ -178,7 +178,7 @@ export default function ManageRoomsPage() {
               <div className="rounded-xl bg-primary/10 p-4">
                 <p className="text-sm text-text-muted">Price per night</p>
                 <p className="mt-1 font-semibold text-text">
-                  $ {selectedRoom.pricePerNight}
+                  {formatCurrency(selectedRoom.pricePerNight)}
                 </p>
               </div>
               <div className="rounded-xl bg-primary/10 p-4">
