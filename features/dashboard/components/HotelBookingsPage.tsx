@@ -247,8 +247,9 @@ export default function HotelBookingsPage() {
                 {formatDate(selectedBooking.checkOutDate)}
               </p>
               <p>
-                <span className="text-text font-semibold">Total: </span> $
+                <span className="text-text font-semibold">Total: </span>
                 {selectedBooking.totalPrice}
+                {formatCurrency(selectedBooking.totalPrice)}
               </p>
               <p>
                 <span className="text-text font-semibold">
