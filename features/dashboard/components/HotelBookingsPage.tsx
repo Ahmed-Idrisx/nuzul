@@ -248,7 +248,6 @@ export default function HotelBookingsPage() {
               </p>
               <p>
                 <span className="text-text font-semibold">Total: </span>
-                {selectedBooking.totalPrice}
                 {formatCurrency(selectedBooking.totalPrice)}
               </p>
               <p>
