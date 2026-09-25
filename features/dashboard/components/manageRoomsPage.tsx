@@ -8,6 +8,7 @@ import MainButton from "@/components/shared/MainButton";
 import { useAppContext } from "@/context/AppContext";
 import { useToggleRoomAvailability } from "@/features/rooms/hooks/useRoom";
 import { HotelRoom } from "@/features/rooms/types/room.types";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function ManageRoomsPage() {
   const { user } = useAppContext();
@@ -84,7 +85,7 @@ export default function ManageRoomsPage() {
                       {room.shortDescription}
                     </td>
                     <td className="p-4 whitespace-nowrap">
-                      $ {room.pricePerNight}
+                      {formatCurrency(room.pricePerNight)}
                     </td>
                     <td
                       className="p-4"

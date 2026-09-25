@@ -9,6 +9,7 @@ import MainButton from "@/components/shared/MainButton";
 import toast from "react-hot-toast";
 import StatusDropdown from "./StatusDropdown";
 import { formatDate } from "@/utils/formatDate";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function HotelBookingsPage() {
   const { user } = useAppContext();
@@ -114,7 +115,7 @@ export default function HotelBookingsPage() {
                       {formatDate(booking.checkOutDate)}
                     </td>
                     <td className="p-4 whitespace-nowrap">
-                      ${booking.totalPrice}
+                      {formatCurrency(booking.totalPrice)}
                     </td>
                     <td className="p-4 whitespace-nowrap">
                       {booking.paymentMethod === "CARD"
@@ -222,7 +223,11 @@ export default function HotelBookingsPage() {
                     <span className="text-text font-semibold">
                       Price/night:{" "}
                     </span>
-                    ${selectedRoom?.pricePerNight}
+                    {formatCurrency(
+                      selectedRoom?.pricePerNight
+                        ? selectedRoom.pricePerNight
+                        : 0,
+                    )}
                   </p>
                 </div>
               </div>
