@@ -2,6 +2,7 @@
 import Spinner from "@/components/ui/Spinner";
 import { useAppContext } from "@/context/AppContext";
 import BookingsAreaChart from "@/features/dashboard/components/BookingsAreaChart";
+import { formatCurrency } from "@/utils/formatCurrency";
 import { FaBed, FaDollarSign, FaClipboardList } from "react-icons/fa";
 
 export default function AdminDashboard() {
@@ -17,10 +18,9 @@ export default function AdminDashboard() {
   const rooms = user?.hotel?.rooms ?? [];
   const bookings = user?.bookings ?? [];
 
-  const totalRevenue = bookings.reduce(
-    (sum, booking) => sum + Number(booking.totalPrice),
-    0,
-  );
+  const totalRevenue = bookings
+    .filter((booking) => booking.isPaid && booking.status === "PAID")
+    .reduce((sum, booking) => sum + Number(booking.totalPrice), 0);
 
   const dashboardCardsData = [
     {
@@ -30,7 +30,7 @@ export default function AdminDashboard() {
     },
     {
       title: "Total Revenue",
-      value: "$" + totalRevenue.toFixed(2),
+      value: formatCurrency(totalRevenue),
       icon: FaDollarSign,
     },
     {

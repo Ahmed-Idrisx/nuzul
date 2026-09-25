@@ -1,3 +1,4 @@
+import { BookingStatus } from "@/features/user/types/user.types";
 import {
   FaFacebookF,
   FaLinkedinIn,
@@ -291,4 +292,10 @@ export const appStores = [
     href: "https://play.google.com",
     icon: FaGooglePlay,
   },
+];
+
+export const bookingStatuses: BookingStatus[] = [
+  "PENDING",
+  "PAID",
+  "CANCELLED",
 ];

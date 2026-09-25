@@ -31,6 +31,7 @@ import {
   type CheckAvailabilityFormData,
 } from "@/features/bookings/schemas/booking.schema";
 import { useHotel } from "@/features/hotels/hooks/useHotel";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function RoomDetailsPage({
   hotelId,
@@ -239,7 +240,7 @@ export default function RoomDetailsPage({
                   Nightly rate
                 </p>
                 <p className="mt-2 text-2xl font-semibold text-text">
-                  ${room.pricePerNight}
+                  {formatCurrency(room.pricePerNight)}
                   <span className="ml-1 text-sm font-normal text-text-muted">
                     per night
                   </span>

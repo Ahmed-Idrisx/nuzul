@@ -16,6 +16,7 @@ import {
 import Spinner from "@/components/ui/Spinner";
 
 import { useHotel } from "../hooks/useHotel";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 interface FilterOption {
   label: string;
@@ -374,7 +375,7 @@ export default function HotelDetailsPage({ hotelId }: { hotelId: string }) {
                   </div>
                   <div className="text-left sm:text-right">
                     <p className="text-lg font-semibold text-text">
-                      ${room.pricePerNight}
+                      {formatCurrency(room.pricePerNight)}
                     </p>
                     <p className="text-xs text-text-muted">per night</p>
                     <span className="mt-3 inline-block text-sm font-semibold text-primary">

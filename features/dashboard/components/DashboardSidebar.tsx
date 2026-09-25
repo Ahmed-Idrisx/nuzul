@@ -15,7 +15,7 @@ export default function DashboardSidebar() {
     { name: "Dashboard", href: "/dashboard", icon: FiHome },
     { name: "Add Room", href: "/dashboard/add-room", icon: FiPlusSquare },
     { name: "Manage Rooms", href: "/dashboard/manage-rooms", icon: FiSettings },
-    { name: "Bookings", href: "/dashboard/bookings", icon: FiList },
+    { name: "Bookings", href: "/dashboard/hotel-bookings", icon: FiList },
   ];
 
   return (

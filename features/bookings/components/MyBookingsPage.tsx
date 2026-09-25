@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Spinner from "@/components/ui/Spinner";
 import { useAppContext } from "@/context/AppContext";
-import { formatDate } from "../utils/formatDate";
-import { formatCurrency } from "../utils/formatCurrency";
+import { formatDate } from "@/utils/formatDate";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 const statusClasses = {
   PENDING: "bg-amber-100 text-amber-700",
