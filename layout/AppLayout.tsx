@@ -12,9 +12,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const { showHotelReg } = useAppContext();
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       {!isOwnerPath && <Navbar />}
       {showHotelReg && <CreateHotelForm />}
-      {children}
+      <div id="main-content">{children}</div>
       {!isOwnerPath && <Footer />}
     </>
   );

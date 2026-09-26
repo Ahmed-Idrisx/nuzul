@@ -129,13 +129,12 @@ const Header = () => {
               alt="Nuzul"
               width={120}
               height={40}
-              priority
               className="h-10 w-auto object-contain"
             />
           </Link>
 
           {/* DESKTOP NAV */}
-          <nav className="hidden flex-1 justify-center lg:flex">
+          <nav aria-label="Primary navigation" className="hidden flex-1 justify-center lg:flex">
             <ul className="flex items-center gap-5 lg:gap-7">
               {navLinks.map((link) => (
                 <li key={link.href}>
@@ -180,6 +179,7 @@ const Header = () => {
                   type="button"
                   aria-haspopup="menu"
                   aria-expanded={isUserMenuOpen}
+                  aria-controls="user-menu"
                   onClick={toggleUserMenu}
                   className="flex h-11 items-center gap-2 rounded-full border border-primary bg-white px-2 transition-all duration-200 hover:border-primary-dark hover:shadow-sm"
                 >
@@ -213,6 +213,7 @@ const Header = () => {
                 {/* DESKTOP USER DROPDOWN */}
                 {isUserMenuOpen && (
                   <div
+                    id="user-menu"
                     role="menu"
                     className="absolute right-0 top-[calc(100%+15px)] z-50 w-55 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl"
                   >
@@ -280,6 +281,7 @@ const Header = () => {
                   : "Open navigation menu"
               }
               aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
               className="flex h-11 w-11 items-center justify-center rounded-xl text-text transition-colors hover:bg-black/5 lg:hidden"
             >
               {isMobileMenuOpen ? (
@@ -301,7 +303,11 @@ const Header = () => {
 
       {/* MOBILE SIDEBAR  */}
       <aside
+        id="mobile-navigation"
+        role="dialog"
+        aria-modal="true"
         aria-label="Mobile navigation"
+        inert={!isMobileMenuOpen ? true : undefined}
         className={`fixed left-0 top-0 z-70 flex h-dvh w-72 flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/*  SIDEBAR HEADER  */}
@@ -361,7 +367,7 @@ const Header = () => {
         )}
 
         {/*  MOBILE NAV  */}
-        <nav className="flex-1 overflow-y-auto p-4">
+        <nav aria-label="Mobile primary navigation" className="flex-1 overflow-y-auto p-4">
           <ul className="space-y-1">
             {navLinks.map((link) => (
               <li key={link.href}>

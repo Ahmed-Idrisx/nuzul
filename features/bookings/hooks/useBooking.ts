@@ -19,9 +19,15 @@ export function useCheckAvailability() {
 }
 
 export function useCreateBooking() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (payload: CreateBookingPayload) =>
       bookingApi.createBooking(payload),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
   });
 }
 

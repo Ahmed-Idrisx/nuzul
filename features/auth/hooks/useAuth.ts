@@ -17,10 +17,11 @@ export function useLogin() {
   return useMutation({
     mutationFn: (payload: LoginPayload) => authApi.login(payload),
 
-    onSuccess: (res) => {
-      // update the profile data in the cache after a successful update
-
-      queryClient.setQueryData(["user"], res.data[0]);
+    onSuccess: () => {
+      // Refetch the full user (with bookings, hotel, rooms) from /user/me.
+      // The login response only contains partial user data, so we must
+      // invalidate instead of using setQueryData.
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
 }

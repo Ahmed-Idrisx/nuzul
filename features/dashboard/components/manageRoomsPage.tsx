@@ -157,6 +157,7 @@ export default function ManageRoomsPage() {
                       src={image}
                       alt={`${selectedRoom.roomType} image ${index + 1}`}
                       fill
+                      sizes="(min-width: 640px) 160px, 40vw"
                       className="object-cover"
                     />
                   </div>

@@ -20,26 +20,39 @@ export default function Mood() {
             Made for guests. Built for hosts.
           </h2>
           <div
-            className="mx-auto mt-8 inline-flex rounded-xl border border-border bg-white p-1 shadow-sm"
+            className="mx-auto mt-8 inline-flex gap-2 rounded-xl border border-border bg-white p-1 shadow-sm"
             role="tablist"
             aria-label="Choose your experience"
           >
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                type="button"
-                role="tab"
-                aria-selected={activeTab === tab}
-                onClick={() => setActiveTab(tab)}
-                className={`rounded-lg px-5 py-2.5 text-sm font-semibold transition ${activeTab === tab ? "bg-primary text-white shadow-sm" : "text-text-muted hover:bg-primary/10 hover:text-text"}`}
-              >
-                {experiences[tab].label}
-              </button>
-            ))}
+            {tabs.map((tab) => {
+              const tabId = `experience-tab-${tab}`;
+              const panelId = `experience-panel-${tab}`;
+
+              return (
+                <button
+                  key={tab}
+                  id={tabId}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  aria-controls={panelId}
+                  onClick={() => setActiveTab(tab)}
+                  className={`rounded-lg px-5 py-2.5 text-sm font-semibold transition ${activeTab === tab ? "bg-primary text-white shadow-sm" : "text-text-muted hover:bg-primary/10 hover:text-text"}`}
+                >
+                  {experiences[tab].label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        <div className="mt-14" role="tabpanel" aria-label={experience.label}>
+        <div
+          id={`experience-panel-${activeTab}`}
+          className="mt-14"
+          role="tabpanel"
+          aria-labelledby={`experience-tab-${activeTab}`}
+          tabIndex={0}
+        >
           <div className="grid items-center gap-10 lg:grid-cols-[0.85fr_1.15fr] lg:gap-28">
             <div className="mx-auto flex aspect-square w-full max-w-sm items-center justify-center rounded-3xl bg-white p-16 text-primary">
               <ExperienceIcon className="h-full w-full" aria-hidden="true" />

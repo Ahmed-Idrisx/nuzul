@@ -1,9 +1,25 @@
 "use client";
+import dynamic from "next/dynamic";
 import Spinner from "@/components/ui/Spinner";
 import { useAppContext } from "@/context/AppContext";
-import BookingsAreaChart from "@/features/dashboard/components/BookingsAreaChart";
 import { formatCurrency } from "@/utils/formatCurrency";
 import { FaBed, FaDollarSign, FaClipboardList } from "react-icons/fa";
+
+const BookingsAreaChart = dynamic(
+  () => import("@/features/dashboard/components/BookingsAreaChart"),
+  {
+    loading: () => (
+      <div className="flex h-75 items-center justify-center">
+        <div
+          className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-primary"
+          role="status"
+          aria-label="Loading chart"
+        />
+      </div>
+    ),
+    ssr: false,
+  },
+);
 
 export default function AdminDashboard() {
   const { user, isLoading } = useAppContext();

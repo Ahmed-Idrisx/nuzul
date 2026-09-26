@@ -105,6 +105,7 @@ export default function Hero() {
         >
           <div ref={destinationRef} className="relative min-w-0">
             <label
+              id="destination-label"
               htmlFor="destination"
               className="mb-2 flex items-center gap-2 px-1 font-semibold uppercase tracking-wide text-text-muted"
             >
@@ -115,8 +116,12 @@ export default function Hero() {
             <button
               type="button"
               id="destination"
-              aria-haspopup="listbox"
+              role="combobox"
+              aria-labelledby="destination-label"
+              aria-controls="destination-options"
               aria-expanded={isDestinationOpen}
+              aria-invalid={Boolean(errors.destination)}
+              aria-describedby="destination-error"
               onClick={() => setIsDestinationOpen((open) => !open)}
               className="flex h-12 w-full items-center justify-between gap-3 rounded-xl border border-border bg-white px-4 text-left text-text outline-none transition hover:border-primary focus:border-primary focus:ring-4 focus:ring-primary/10"
             >
@@ -132,32 +137,30 @@ export default function Hero() {
             </button>
             {isDestinationOpen && (
               <ul
+                id="destination-options"
                 role="listbox"
                 aria-label="Destinations"
                 className="absolute inset-x-0 top-full z-30 mt-2 max-h-60 overflow-y-auto rounded-xl border border-border bg-white p-1 shadow-xl"
               >
                 {cities.map((city) => (
-                  <li
+                  <button
                     key={city}
+                    type="button"
                     role="option"
                     aria-selected={selectedCity === city}
+                    onClick={() => {
+                      setSelectedCity(city);
+                      setValue("destination", city, { shouldValidate: true });
+                      setIsDestinationOpen(false);
+                    }}
+                    className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${selectedCity === city ? "bg-primary/10 font-semibold text-primary" : "text-text-muted hover:bg-primary/5 hover:text-text"}`}
                   >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedCity(city);
-                        setValue("destination", city, { shouldValidate: true });
-                        setIsDestinationOpen(false);
-                      }}
-                      className={`w-full rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${selectedCity === city ? "bg-primary/10 font-semibold text-primary" : "text-text-muted hover:bg-primary/5 hover:text-text"}`}
-                    >
-                      {city}
-                    </button>
-                  </li>
+                    {city}
+                  </button>
                 ))}
               </ul>
             )}
-            <p className="mt-1 min-h-4 px-1 text-xs text-red-600">
+            <p id="destination-error" className="mt-1 min-h-4 px-1 text-xs text-red-600" aria-live="polite">
               {errors.destination?.message ?? " "}
             </p>
           </div>

@@ -185,6 +185,7 @@ export default function AddRoomPage() {
                     preview ? `Room image ${index + 1}` : "Upload room image"
                   }
                   fill
+                  sizes="(min-width: 640px) 130px, 40vw"
                   unoptimized={Boolean(preview)}
                   className="object-cover"
                 />

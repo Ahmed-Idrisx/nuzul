@@ -16,7 +16,7 @@ import {
   FiShield,
   FiUsers,
 } from "react-icons/fi";
-import { useQueryClient } from "@tanstack/react-query";
+
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -43,7 +43,6 @@ export default function RoomDetailsPage({
   const { data: hotel, isLoading, isError } = useHotel(hotelId);
   const { user } = useAppContext();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const checkAvailability = useCheckAvailability();
   const createBooking = useCreateBooking();
   const room = hotel?.rooms.find((item) => item.id === roomId);
@@ -122,7 +121,6 @@ export default function RoomDetailsPage({
       }
 
       const response = await createBooking.mutateAsync(data);
-      await queryClient.invalidateQueries({ queryKey: ["user"] });
       setBookingMessage(response.message);
       setBookingStatus(response.status);
       toast[response.status === "success" ? "success" : "error"](
