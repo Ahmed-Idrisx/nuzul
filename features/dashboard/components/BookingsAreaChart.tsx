@@ -1,5 +1,5 @@
 "use client";
-import { Booking } from "@/features/user/types/user.types";
+import type { HotelBooking } from "@/features/user/types/user.types";
 import {
   AreaChart,
   Area,
@@ -18,7 +18,7 @@ interface ChartDataPoint {
 export default function BookingsAreaChart({
   bookings,
 }: {
-  bookings: Booking[];
+  bookings: HotelBooking[];
 }) {
   const bookingsPerDay = bookings.reduce<Record<string, number>>(
     (acc, booking) => {
