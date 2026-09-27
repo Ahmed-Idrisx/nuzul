@@ -9,7 +9,7 @@ import type {
   CreateBookingPayload,
   UpdateBookingStatusPayload,
 } from "../types/booking.types";
-import type { User } from "@/features/user/types/user.types";
+import type { HotelBooking, User } from "@/features/user/types/user.types";
 
 export function useCheckAvailability() {
   return useMutation({
@@ -58,6 +58,21 @@ export function useUpdateBookingStatus() {
                     }
                   : booking,
               ),
+              hotel: currentUser.hotel
+                ? {
+                    ...currentUser.hotel,
+                    bookings: currentUser.hotel.bookings.map(
+                      (booking: HotelBooking) =>
+                        booking.id === variables.bookingId
+                          ? {
+                              ...booking,
+                              ...updatedBooking,
+                              status: variables.payload.status,
+                            }
+                          : booking,
+                    ),
+                  }
+                : null,
             }
           : currentUser,
       );

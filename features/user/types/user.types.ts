@@ -41,6 +41,8 @@ export interface Booking {
   room: HotelRoom;
 }
 
+export type HotelBooking = Omit<Booking, "hotel">;
+
 export interface Hotel {
   id: string;
   name: string;
@@ -55,6 +57,7 @@ export interface Hotel {
   contact: string;
   ownerId: string;
   rooms: HotelRoom[];
+  bookings: HotelBooking[];
 }
 
 export interface User {

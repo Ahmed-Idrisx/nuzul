@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useAppContext } from "@/context/AppContext";
-import { Booking, BookingStatus } from "@/features/user/types/user.types";
+import { BookingStatus, HotelBooking } from "@/features/user/types/user.types";
 import { useUpdateBookingStatus } from "@/features/bookings/hooks/useBooking";
 import { FiX } from "react-icons/fi";
 import Image from "next/image";
@@ -13,8 +13,10 @@ import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function HotelBookingsPage() {
   const { user } = useAppContext();
-  const bookings = user?.bookings ?? [];
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const bookings = user?.hotel?.bookings ?? [];
+  const [selectedBooking, setSelectedBooking] = useState<HotelBooking | null>(
+    null,
+  );
   const updateBookingStatus = useUpdateBookingStatus();
 
   const rooms = user?.hotel?.rooms ?? [];
@@ -24,7 +26,7 @@ export default function HotelBookingsPage() {
   const selectedRoom = selectedBooking ? roomOf(selectedBooking.roomId) : null;
 
   const handleStatusChange = async (
-    booking: Booking,
+    booking: HotelBooking,
     selectedStatus: BookingStatus,
   ) => {
     if (user?.role !== "HOTEL_OWNER" || selectedStatus === booking.status) {
