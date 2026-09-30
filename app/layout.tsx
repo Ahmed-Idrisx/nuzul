@@ -4,6 +4,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { Providers } from "@/providers/provider";
 import AppLayout from "@/layout/AppLayout";
+import { Analytics } from "@vercel/analytics/next";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <Providers>
           <AppLayout>{children}</AppLayout>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
