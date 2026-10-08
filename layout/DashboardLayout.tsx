@@ -28,7 +28,7 @@ export default function DashboardLayout({
 
   if (user?.role !== "HOTEL_OWNER") {
     return (
-      <div className="flex flex-col items-center justify-center text-center px-6 bg-white">
+      <div className="h-screen flex flex-col items-center justify-center text-center px-6 bg-white">
         <h1 className="text-2xl sm:text-4xl font-semibold text-text-muted">
           You are not authorized to access this page
         </h1>
@@ -44,7 +44,7 @@ export default function DashboardLayout({
   return (
     <>
       <DashboardNavbar />
-      <div className="mt-[70px] h-[calc(100vh-70px)] overflow-hidden">
+      <div className="mt-17.5 h-[calc(100vh-70px)] overflow-hidden">
         <DashboardSidebar />
         <div className="ml-16 h-full min-w-0 overflow-y-auto p-5 sm:ml-60 lg:pl-12 lg:pt-12">
           {children}
